@@ -157,18 +157,9 @@ class VideoPlayerControlsView: NSView {
     private func setupUI() {
         wantsLayer = true
         
-        effectView = NSVisualEffectView()
+        effectView = DSGlass.videoControls()
         effectView.appearance = NSAppearance(named: .vibrantDark)
-        effectView.material = .hudWindow
-        effectView.blendingMode = .withinWindow
-        effectView.state = .active
-        effectView.wantsLayer = true
-        if #available(macOS 26.0, *), SDK_VERSION >= 26 {
-            effectView.layer?.cornerRadius = 16
-        } else {
-            effectView.layer?.cornerRadius = 8
-        }
-        effectView.layer?.masksToBounds = true
+        effectView.translatesAutoresizingMaskIntoConstraints = false
         effectView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(effectView)
         

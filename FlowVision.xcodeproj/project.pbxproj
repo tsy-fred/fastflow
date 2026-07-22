@@ -15,6 +15,8 @@
 		F72B1E702F713AF60056B19F /* DemoSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B1E6F2F713AF60056B19F /* DemoSettingsViewController.swift */; };
 		F72B1E742F713D570056B19F /* TaggingSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F72B1E732F713D570056B19F /* TaggingSettingsViewController.xib */; };
 		F72B1E762F713DA80056B19F /* TaggingSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B1E752F713DA80056B19F /* TaggingSettingsViewController.swift */; };
+		F7D500012F80000000D5GN /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D500002F80000000D5GN /* DesignSystem.swift */; };
+		F7MINI0022F8000000MODE /* MinimalMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7MINI0012F8000000MODE /* MinimalMode.swift */; };
 		F73865D32C37B97500837FE4 /* CustomCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D22C37B97500837FE4 /* CustomCollectionView.swift */; };
 		F73865D52C37B9B800837FE4 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D42C37B9B800837FE4 /* Layout.swift */; };
 		F73865D72C37BB2900837FE4 /* CustomOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D62C37BB2900837FE4 /* CustomOutlineView.swift */; };
@@ -79,9 +81,21 @@
 		F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */; };
 		F7E0B31C2DBF0F55007CBD17 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */; };
 		F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F600472E1E094A00ED8536 /* FinderTag.swift */; };
+		F7KB0012F8000000KBIND /* KeyBindingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00002F8000000KBIND /* KeyBindingManager.swift */; };
+		F7KB0014F8000000QUICK /* QuickFolderSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00022F8000000QUICK /* QuickFolderSelector.swift */; };
+		F7KB0015F8000000INFOM /* InfoOverlayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00032F8000000INFOM /* InfoOverlayManager.swift */; };
+		F7KB0016F8000000INFOV /* InfoOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00042F8000000INFOV /* InfoOverlayView.swift */; };
+		F7KB0018F8000000BREN /* BatchRenamePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00062F8000000BREN /* BatchRenamePanel.swift */; };
+		F7KB0019F8000000BCNV /* BatchConvertPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00072F8000000BCNV /* BatchConvertPanel.swift */; };
+		F7KB0020F8000000FACT /* FastStoneActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00082F8000000FACT /* FastStoneActions.swift */; };
+		F7KB0017F8000000INFOS /* InfoOverlaySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00052F8000000INFOS /* InfoOverlaySettingsViewController.swift */; };
 		F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */; };
+		F7KB0013F8000000KBSET /* KeyBindingSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00012F8000000KBSET /* KeyBindingSettingsViewController.swift */; };
 		F7FAE1012F6BA00000FAE101 /* FileInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */; };
 		F7FED5F32F7D0B1100E35164 /* Tagging.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FED5F22F7D0B0E00E35164 /* Tagging.swift */; };
+		F7SL00012F8000000SLSH /* SlideshowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7SL00022F8000000SLSH /* SlideshowManager.swift */; };
+		F7SL00032F8000000SLSV /* SlideshowSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7SL00042F8000000SLSV /* SlideshowSettingsViewController.swift */; };
+		F7SL00052F8000000CMPR /* CompareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7SL00062F8000000CMPR /* CompareView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -126,6 +140,8 @@
 		F72B1E712F713D570056B19F /* TaggingSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TaggingSettingsViewController.xib; path = Base.lproj/TaggingSettingsViewController.xib; sourceTree = "<group>"; };
 		F72B1E722F713D570056B19F /* TaggingSettingsViewController.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = TaggingSettingsViewController.xcstrings; path = mul.lproj/TaggingSettingsViewController.xcstrings; sourceTree = "<group>"; };
 		F72B1E752F713DA80056B19F /* TaggingSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingSettingsViewController.swift; sourceTree = "<group>"; };
+		F7D500002F80000000D5GN /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		F7MINI0012F8000000MODE /* MinimalMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalMode.swift; sourceTree = "<group>"; };
 		F73865D22C37B97500837FE4 /* CustomCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionView.swift; sourceTree = "<group>"; };
 		F73865D42C37B9B800837FE4 /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		F73865D62C37BB2900837FE4 /* CustomOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomOutlineView.swift; sourceTree = "<group>"; };
@@ -196,6 +212,17 @@
 		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		F7F600472E1E094A00ED8536 /* FinderTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderTag.swift; sourceTree = "<group>"; };
+		F7KB00002F8000000KBIND /* KeyBindingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyBindingManager.swift; sourceTree = "<group>"; };
+		F7KB00022F8000000QUICK /* QuickFolderSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickFolderSelector.swift; sourceTree = "<group>"; };
+		F7KB00032F8000000INFOM /* InfoOverlayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoOverlayManager.swift; sourceTree = "<group>"; };
+		F7KB00042F8000000INFOV /* InfoOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoOverlayView.swift; sourceTree = "<group>"; };
+		F7KB00062F8000000BREN /* BatchRenamePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchRenamePanel.swift; sourceTree = "<group>"; };
+		F7KB00072F8000000BCNV /* BatchConvertPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchConvertPanel.swift; sourceTree = "<group>"; };
+		F7KB00082F8000000FACT /* FastStoneActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastStoneActions.swift; sourceTree = "<group>"; };
+		F7SL00022F8000000SLSH /* SlideshowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideshowManager.swift; sourceTree = "<group>"; };
+		F7SL00042F8000000SLSV /* SlideshowSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideshowSettingsViewController.swift; sourceTree = "<group>"; };
+		F7SL00062F8000000CMPR /* CompareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompareView.swift; sourceTree = "<group>"; };
+		F7KB00052F8000000INFOS /* InfoOverlaySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoOverlaySettingsViewController.swift; sourceTree = "<group>"; };
 		F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPopoverViewController.swift; sourceTree = "<group>"; };
 		F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoWindow.swift; sourceTree = "<group>"; };
 		F7FED5F22F7D0B0E00E35164 /* Tagging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagging.swift; sourceTree = "<group>"; };
@@ -218,6 +245,7 @@
 		F73865DC2C37BD7F00837FE4 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				F7D500002F80000000D5GN /* DesignSystem.swift */,
 				F76F6A622F4FE58000D798DC /* TempVariable.swift */,
 				F73865D82C37BBCB00837FE4 /* GlobalVariable.swift */,
 				F70F9FC02BAFE7B300C50CDD /* Common.swift */,
@@ -225,6 +253,10 @@
 				F73865E12C37C0A300837FE4 /* Enum.swift */,
 				F73865E72C37C26C00837FE4 /* FFmpegKit.swift */,
 				F7F600472E1E094A00ED8536 /* FinderTag.swift */,
+				F7KB00002F8000000KBIND /* KeyBindingManager.swift */,
+				F7SL00022F8000000SLSH /* SlideshowManager.swift */,
+				F7KB00022F8000000QUICK /* QuickFolderSelector.swift */,
+				F7KB00032F8000000INFOM /* InfoOverlayManager.swift */,
 				F73865E32C37C11B00837FE4 /* ImageProcess.swift */,
 				F76E2EFD2C3B765C0031B0B4 /* Log.swift */,
 				F73865DA2C37BC1500837FE4 /* RefCode.swift */,
@@ -253,8 +285,12 @@
 				F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */,
 				F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */,
 				F78960F12BDCC26B00C2571B /* LargeImageView.swift */,
+				F7KB00042F8000000INFOV /* InfoOverlayView.swift */,
+				F7KB00062F8000000BREN /* BatchRenamePanel.swift */,
+				F7KB00072F8000000BCNV /* BatchConvertPanel.swift */,
 				F73865D42C37B9B800837FE4 /* Layout.swift */,
 				F7AA00002F9E000000AA0001 /* VideoPlayerControlsView.swift */,
+				F7SL00062F8000000CMPR /* CompareView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -309,6 +345,8 @@
 				F77098942F0E427700E7D164 /* FileOperation.swift */,
 				F77098922F0E411200E7D164 /* FileSystem.swift */,
 				F77098902F0E3C6200E7D164 /* KeyShortcut.swift */,
+				F7MINI0012F8000000MODE /* MinimalMode.swift */,
+				F7KB00082F8000000FACT /* FastStoneActions.swift */,
 				F77098962F0E436600E7D164 /* LargeImage.swift */,
 				F77098982F0E43DF00E7D164 /* LayoutManagement.swift */,
 				F74D55572F0E491D00C9AB85 /* LayoutProfileConfig.swift */,
@@ -362,6 +400,8 @@
 				F74636542C5237720086E920 /* ActionsSettingsViewController.swift */,
 				F72B1E732F713D570056B19F /* TaggingSettingsViewController.xib */,
 				F72B1E752F713DA80056B19F /* TaggingSettingsViewController.swift */,
+				F7KB00052F8000000INFOS /* InfoOverlaySettingsViewController.swift */,
+				F7SL00042F8000000SLSV /* SlideshowSettingsViewController.swift */,
 				F74636462C4FFA340086E920 /* AdvancedSettingsViewController.xib */,
 				F74636352C4F43AE0086E920 /* AdvancedSettingsViewController.swift */,
 				F72B1E6D2F7139FA0056B19F /* DemoSettingsViewController.xib */,
@@ -485,6 +525,7 @@
 				F7AC30052D37E26B00F48AEF /* CustomPathControl.swift in Sources */,
 				F74636372C4F43AE0086E920 /* AdvancedSettingsViewController.swift in Sources */,
 				F77098912F0E3C6B00E7D164 /* KeyShortcut.swift in Sources */,
+				F7MINI0022F8000000MODE /* MinimalMode.swift in Sources */,
 				F7790ED72BA5FB6A00406D35 /* CustomCollectionViewItem.swift in Sources */,
 				F7663C162F222AAC0028DF35 /* ImageEditingView.swift in Sources */,
 				F7AA00012F9E000000AA0001 /* VideoPlayerControlsView.swift in Sources */,
@@ -499,6 +540,18 @@
 				F77098972F0E436800E7D164 /* LargeImage.swift in Sources */,
 				F74D55582F0E493700C9AB85 /* LayoutProfileConfig.swift in Sources */,
 				F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */,
+				F7KB0012F8000000KBIND /* KeyBindingManager.swift in Sources */,
+				F7KB0014F8000000QUICK /* QuickFolderSelector.swift in Sources */,
+				F7SL00012F8000000SLSH /* SlideshowManager.swift in Sources */,
+				F7KB0015F8000000INFOM /* InfoOverlayManager.swift in Sources */,
+				F7KB0016F8000000INFOV /* InfoOverlayView.swift in Sources */,
+				F7KB0018F8000000BREN /* BatchRenamePanel.swift in Sources */,
+				F7KB0019F8000000BCNV /* BatchConvertPanel.swift in Sources */,
+				F7KB0020F8000000FACT /* FastStoneActions.swift in Sources */,
+				F7KB0017F8000000INFOS /* InfoOverlaySettingsViewController.swift in Sources */,
+				F7SL00032F8000000SLSV /* SlideshowSettingsViewController.swift in Sources */,
+				F7SL00052F8000000CMPR /* CompareView.swift in Sources */,
+				F7D500012F80000000D5GN /* DesignSystem.swift in Sources */,
 				F73865D92C37BBCB00837FE4 /* GlobalVariable.swift in Sources */,
 				F76F6A632F4FE58800D798DC /* TempVariable.swift in Sources */,
 				F74D555A2F0E49AB00C9AB85 /* AutoScrollPlay.swift in Sources */,

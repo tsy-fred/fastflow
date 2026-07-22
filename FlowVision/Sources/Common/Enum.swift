@@ -29,4 +29,6 @@ extension Settings.PaneIdentifier {
     static let tagging = Self("tagging")
     static let advanced = Self("advanced")
     static let demo = Self("demo")
+    static let infoOverlay = Self("infoOverlay")
+    static let slideshow = Self("slideshow")
 }

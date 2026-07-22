@@ -43,10 +43,10 @@ class CustomProfile: Codable {
     }
     // 布局（网格视图）
     // Layout (grid view)
-    var ThumbnailBorderRadiusInGrid: Double = 0
+    var ThumbnailBorderRadiusInGrid: Double = 8
     // 布局（非网格视图）
     // Layout (non-grid view)
-    var ThumbnailBorderRadius: Double = 5
+    var ThumbnailBorderRadius: Double = 8
     var _thumbnailBorderThickness: Double = 6
     var ThumbnailBorderThickness: Double {
         get {
@@ -194,8 +194,16 @@ class PublicVar{
                     viewController.adjustWindowPortable(firstShowThumb: true, animate: false)
                 }
                 if !isInLargeView {
+                    isMinimalMode = false
                     viewController.recalcIfHasChangedSize()
                 }
+            }
+        }
+    }
+    var isMinimalMode = false {
+        didSet {
+            if !isInInitStage {
+                viewController.toggleMinimalMode()
             }
         }
     }
@@ -207,12 +215,22 @@ class PublicVar{
     var isOutlineViewFirstResponder: Bool = false
     var isShowExif: Bool = false {
         didSet {
-            if let largeImageView = viewController.largeImageView,
-               isShowExif && largeImageView.exifTextView.textItems.isEmpty{
-                let exifData = convertExifData(file: largeImageView.file)
-                largeImageView.updateTextItems(formatExifData(exifData ?? [:], isVideo: globalVar.HandledVideoExtensions.contains(largeImageView.file.ext), needWarp: true))
+            if let largeImageView = viewController.largeImageView {
+                if isShowExif {
+                    // 更新传统 ExifTextView
+                    // Update legacy ExifTextView
+                    if largeImageView.exifTextView.textItems.isEmpty {
+                        let exifData = convertExifData(file: largeImageView.file)
+                        largeImageView.updateTextItems(formatExifData(exifData ?? [:], isVideo: globalVar.HandledVideoExtensions.contains(largeImageView.file.ext), needWarp: true))
+                    }
+                    // 更新现代化 InfoOverlayView
+                    // Update modern InfoOverlayView
+                    let overlayModules = InfoOverlayManager.shared.modules(for: largeImageView.file)
+                    largeImageView.infoOverlayView.modules = overlayModules
+                }
+                largeImageView.exifTextView.isHidden = !isShowExif
+                largeImageView.infoOverlayView.isOverlayVisible = isShowExif
             }
-            viewController.largeImageView.exifTextView.isHidden = !isShowExif
             updateToolbar()
         }
     }
@@ -292,6 +310,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     @IBOutlet weak var coreAreaView: CoreAreaView!
     @IBOutlet weak var outlineView: CustomOutlineView!
     @IBOutlet weak var splitView: CustomSplitView!
+    
+    var compareView: CompareView?
     
     var treeViewData = TreeViewModel()
     
@@ -463,6 +483,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.isLaunchFromFile = globalVar.isLaunchFromFile
         globalVar.isLaunchFromFile = false
         publicVar.isLaunchFromFile_changeLargeImage = publicVar.isLaunchFromFile
+        // 应用亚光玻璃背景样式
+        // Apply frosted glass background style
+        largeImageBgEffectView.material = .hudWindow
+        largeImageBgEffectView.state = .active
+        largeImageBgEffectView.wantsLayer = true
+        largeImageBgEffectView.layer?.cornerRadius = DSCorner.medium
+        largeImageBgEffectView.layer?.borderWidth = DSBorder.glass
+        let appearanceName = NSApp.effectiveAppearance.name
+        largeImageBgEffectView.layer?.borderColor = DSColor.glassBorder(for: appearanceName).cgColor
+
         if publicVar.isLaunchFromFile {
             largeImageBgEffectView.blendingMode = .behindWindow
             largeImageView.isHidden=false
@@ -625,14 +655,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         let theme=NSApp.effectiveAppearance.name
         if theme == .darkAqua {
-            // 暗模式下的颜色
-            // Color in dark mode
-            collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_DARK).cgColor
+            collectionView.layer?.backgroundColor = hexToNSColor(hex: DSColor.collectionBgDark).cgColor
             lastTheme = .darkAqua
         } else {
-            // 光模式下的颜色
-            // Color in light mode
-            collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_LIGHT).cgColor
+            collectionView.layer?.backgroundColor = hexToNSColor(hex: DSColor.collectionBgLight).cgColor
             lastTheme = .aqua
         }
         
@@ -995,14 +1021,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if keyPath == "effectiveAppearance" {
             let theme=NSApp.effectiveAppearance.name
             if theme == .darkAqua {
-                // 暗模式下的颜色
-                // Color in dark mode
-                collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_DARK).cgColor
+                collectionView.layer?.backgroundColor = hexToNSColor(hex: DSColor.collectionBgDark).cgColor
             } else {
-                // 光模式下的颜色
-                // Color in light mode
-                collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_LIGHT).cgColor
+                collectionView.layer?.backgroundColor = hexToNSColor(hex: DSColor.collectionBgLight).cgColor
             }
+            // 更新玻璃边框颜色
+            // Update glass border color
+            largeImageBgEffectView.layer?.borderColor = DSColor.glassBorder(for: theme).cgColor
             if(lastTheme != theme){
                 refreshAll(dryRun: true, needLoadThumbPriority: false)
             }

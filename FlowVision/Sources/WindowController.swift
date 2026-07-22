@@ -319,6 +319,7 @@ extension NSToolbarItem.Identifier {
     static let isRatingFilterOn = NSToolbarItem.Identifier("com.example.isRatingFilterOn")
     static let isAutoPlayVisibleVideo = NSToolbarItem.Identifier("com.example.isAutoPlayVisibleVideo")
     static let isEnableHDR = NSToolbarItem.Identifier("com.example.isEnableHDR")
+    static let slideshow = NSToolbarItem.Identifier("com.example.slideshow")
 }
 
 extension WindowController: NSToolbarDelegate {
@@ -385,6 +386,7 @@ extension WindowController: NSToolbarDelegate {
                 identifiers.append(.viewToggle)
                 identifiers.append(.thumbSize)
                 identifiers.append(.sort)
+                identifiers.append(.slideshow)
             }
         }
         
@@ -891,6 +893,15 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.paletteLabel = NSLocalizedString("Exit Recursive Mode", comment: "退出递归浏览模式")
             toolbarItem.visibilityPriority = .low
             
+        case .slideshow:
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "play.rectangle.fill", accessibilityDescription: "")!, target: self, action: #selector(slideshowAction(_:)))
+            setButtonStyle(button)
+            button.toolTip = NSLocalizedString("Slideshow", comment: "幻灯片播放")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("Slideshow", comment: "幻灯片播放")
+            toolbarItem.paletteLabel = NSLocalizedString("Slideshow", comment: "幻灯片播放")
+            toolbarItem.visibilityPriority = .standard
+
         case .more:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "ellipsis.circle", accessibilityDescription: "")!, target: self, action: #selector(showMoreMenu(_:)))
             setButtonStyle(button)
@@ -973,7 +984,13 @@ extension WindowController: NSToolbarDelegate {
             viewController.toggleSidebar()
         }
     }
-    
+
+    @objc func slideshowAction(_ sender: Any?) {
+        if let viewController = contentViewController as? ViewController {
+            viewController.toggleAutoPlay()
+        }
+    }
+
     @objc func ontopAction(_ sender: Any?) {
         toggleWindowOnTop()
     }

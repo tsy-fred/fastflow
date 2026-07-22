@@ -55,6 +55,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             CustomSettingsViewController(),
             ActionsSettingsViewController(),
             TaggingSettingsViewController(),
+            InfoOverlaySettingsViewController(),
+            SlideshowSettingsViewController(),
             AdvancedSettingsViewController()
         ],
         animated: true,

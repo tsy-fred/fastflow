@@ -18,8 +18,8 @@ private class CardView: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         wantsLayer = true
-        layer?.cornerRadius = 10
-        layer?.borderWidth = 0.5
+        layer?.cornerRadius = DSCorner.large
+        layer?.borderWidth = DSBorder.glass
         updateLayer()
     }
 
@@ -123,11 +123,9 @@ class ProfileOptionsWindow: NSWindow {
     private func setupUI() {
         guard let contentView = self.contentView else { return }
 
-        let backgroundView = NSVisualEffectView(frame: contentView.bounds)
+        let backgroundView = DSGlass.panel()
+        backgroundView.frame = contentView.bounds
         backgroundView.autoresizingMask = [.width, .height]
-        backgroundView.material = .underWindowBackground
-        backgroundView.blendingMode = .behindWindow
-        backgroundView.state = .active
         contentView.addSubview(backgroundView)
 
         let mainStack = NSStackView()

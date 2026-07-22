@@ -108,6 +108,9 @@
         }
       }
     },
+    "%@ = number" : {
+
+    },
     "%d items selected" : {
       "comment" : "选中 %d 项",
       "localizations" : {
@@ -2034,6 +2037,9 @@
         }
       }
     },
+    "Aperture" : {
+
+    },
     "Apply Filter" : {
       "comment" : "应用筛选",
       "localizations" : {
@@ -3213,6 +3219,7 @@
     },
     "AudioMetadata-Channels" : {
       "comment" : "声道数",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3320,6 +3327,7 @@
     },
     "AudioMetadata-CodecLongName" : {
       "comment" : "编码器全名",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4495,6 +4503,18 @@
         }
       }
     },
+    "Batch Convert" : {
+      "comment" : "批量转换"
+    },
+    "Batch Convert…" : {
+      "comment" : "批量转换…"
+    },
+    "Batch Rename" : {
+      "comment" : "批量重命名"
+    },
+    "Batch Rename…" : {
+      "comment" : "批量重命名…"
+    },
     "Border Thickness" : {
       "comment" : "边框厚度",
       "localizations" : {
@@ -4601,6 +4621,18 @@
           }
         }
       }
+    },
+    "Bottom Left" : {
+
+    },
+    "Bottom Right" : {
+
+    },
+    "Browse…" : {
+      "comment" : "浏览…"
+    },
+    "Camera" : {
+
     },
     "Cancel" : {
       "comment" : "取消",
@@ -5565,6 +5597,9 @@
         }
       }
     },
+    "Choose…" : {
+
+    },
     "Clear" : {
       "comment" : "清除",
       "localizations" : {
@@ -5778,6 +5813,12 @@
           }
         }
       }
+    },
+    "Click a shortcut to change it, then press the new key." : {
+      "comment" : "点击快捷键后按下新键即可更改。"
+    },
+    "Click Browse to select…" : {
+
     },
     "Close" : {
       "comment" : "关闭",
@@ -5993,8 +6034,12 @@
         }
       }
     },
+    "Close / Minimize window" : {
+
+    },
     "Close Other Tabs" : {
       "comment" : "关闭其它标签页",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6206,6 +6251,9 @@
           }
         }
       }
+    },
+    "Compare Images…" : {
+      "comment" : "对比模式"
     },
     "Container" : {
       "comment" : "容器",
@@ -6420,6 +6468,12 @@
           }
         }
       }
+    },
+    "Convert" : {
+
+    },
+    "Convert completed" : {
+
     },
     "Copy" : {
       "comment" : "复制",
@@ -6742,6 +6796,9 @@
         }
       }
     },
+    "Copy to Folder…" : {
+      "comment" : "复制到文件夹…"
+    },
     "copy-lowercase" : {
       "comment" : "copy(首字母小写)",
       "localizations" : {
@@ -7063,6 +7120,9 @@
         }
       }
     },
+    "Created" : {
+
+    },
     "Creation Date" : {
       "comment" : "创建日期",
       "localizations" : {
@@ -7169,6 +7229,9 @@
           }
         }
       }
+    },
+    "Crossfade" : {
+
     },
     "Current Filter" : {
       "comment" : "当前过滤",
@@ -7493,6 +7556,7 @@
     },
     "Custom Zoom Ratio..." : {
       "comment" : "自定义缩放比例...",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7600,6 +7664,7 @@
     },
     "Custom Zoom Step..." : {
       "comment" : "自定义缩放梯度...",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8347,6 +8412,15 @@
         }
       }
     },
+    "Destination:" : {
+
+    },
+    "Digits:" : {
+
+    },
+    "Dimensions" : {
+
+    },
     "Directory does not exist" : {
       "comment" : "目录不存在",
       "localizations" : {
@@ -8667,6 +8741,9 @@
           }
         }
       }
+    },
+    "Display Position:" : {
+
     },
     "do-you-want-replace" : {
       "extractionState" : "manual",
@@ -9205,6 +9282,7 @@
     },
     "Empty" : {
       "comment" : "空",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10059,8 +10137,12 @@
         }
       }
     },
+    "Enter Key:" : {
+
+    },
     "Enter the auto play interval in seconds:" : {
       "comment" : "请输入自动播放的间隔时间（秒）：",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10487,6 +10569,12 @@
         }
       }
     },
+    "Esc Key:" : {
+
+    },
+    "Exact Size" : {
+
+    },
     "EXIF Metadata" : {
       "comment" : "EXIF元数据",
       "localizations" : {
@@ -10593,6 +10681,9 @@
           }
         }
       }
+    },
+    "EXIF Summary" : {
+
     },
     "Exif-ApertureValue" : {
       "comment" : "光圈值 (Aperture)",
@@ -13697,6 +13788,9 @@
         }
       }
     },
+    "Exit Compare" : {
+
+    },
     "Exit Edit Mode" : {
       "comment" : "退出编辑模式",
       "localizations" : {
@@ -14553,6 +14647,9 @@
         }
       }
     },
+    "File Size" : {
+
+    },
     "file-exists-continue-batch-rename" : {
       "comment" : "批量重命名的序号与已有文件重名，是否继续?",
       "localizations" : {
@@ -15302,6 +15399,12 @@
         }
       }
     },
+    "files → " : {
+
+    },
+    "files converted" : {
+
+    },
     "Filter" : {
       "comment" : "筛选",
       "localizations" : {
@@ -15944,6 +16047,12 @@
         }
       }
     },
+    "Flash" : {
+
+    },
+    "Focal Length" : {
+
+    },
     "Folder" : {
       "comment" : "文件夹\n目录",
       "localizations" : {
@@ -16479,6 +16588,9 @@
         }
       }
     },
+    "Format:" : {
+
+    },
     "gen-thumb-info" : {
       "comment" : "对于高清缩略图的说明...",
       "localizations" : {
@@ -16799,6 +16911,9 @@
           }
         }
       }
+    },
+    "Go back (previous folder)" : {
+
     },
     "Go Forward" : {
       "comment" : "前进",
@@ -17227,6 +17342,9 @@
           }
         }
       }
+    },
+    "H:" : {
+
     },
     "has-exist-in-dest" : {
       "comment" : "目标文件夹中已存在名为xx的文件。",
@@ -18405,6 +18523,9 @@
         }
       }
     },
+    "Info Overlay" : {
+      "comment" : "信息叠加层设置"
+    },
     "input-new-folder-name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -18619,6 +18740,9 @@
         }
       }
     },
+    "Interval (sec):" : {
+
+    },
     "Invalid current path" : {
       "comment" : "当前路径无效",
       "localizations" : {
@@ -18728,6 +18852,7 @@
     },
     "Invalid input, please enter a positive number" : {
       "comment" : "输入不合法，请输入一个正数",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -19047,6 +19172,9 @@
         }
       }
     },
+    "Keyboard Shortcuts" : {
+
+    },
     "Learn More..." : {
       "comment" : "了解更多...",
       "localizations" : {
@@ -19153,6 +19281,9 @@
           }
         }
       }
+    },
+    "Lens" : {
+
     },
     "Line Space Adjustment" : {
       "comment" : "行间距调整",
@@ -19796,6 +19927,9 @@
         }
       }
     },
+    "Loop music" : {
+
+    },
     "Match All (AND)" : {
       "comment" : "匹配全部 (AND)",
       "localizations" : {
@@ -20009,6 +20143,9 @@
           }
         }
       }
+    },
+    "Max Dimension" : {
+
     },
     "Maximize Window" : {
       "comment" : "最大化窗口",
@@ -20331,6 +20468,9 @@
         }
       }
     },
+    "Minimal Mode — Press Tab to Exit" : {
+      "comment" : "简洁模式 — 按 Tab 退出"
+    },
     "Mirror Flip" : {
       "comment" : "镜像翻转",
       "localizations" : {
@@ -20544,6 +20684,9 @@
           }
         }
       }
+    },
+    "Modified" : {
+
     },
     "More" : {
       "comment" : "更多",
@@ -20973,6 +21116,9 @@
         }
       }
     },
+    "Move to Folder…" : {
+      "comment" : "移动到文件夹…"
+    },
     "Move to Trash" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -21293,6 +21439,9 @@
           }
         }
       }
+    },
+    "Music:" : {
+
     },
     "Name" : {
       "comment" : "名称",
@@ -22259,6 +22408,7 @@
     },
     "next-sibling-of-parent" : {
       "comment" : "上级的平级下一个目录",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -22791,6 +22941,12 @@
           }
         }
       }
+    },
+    "None (Instant)" : {
+
+    },
+    "None selected" : {
+
     },
     "Not Include Folders" : {
       "comment" : "不包含文件夹",
@@ -23969,6 +24125,9 @@
         }
       }
     },
+    "Open item / Enter folder" : {
+
+    },
     "Open Multiple Windows" : {
       "comment" : "打开多个窗口",
       "localizations" : {
@@ -24611,6 +24770,9 @@
         }
       }
     },
+    "Original" : {
+
+    },
     "Original Path" : {
       "comment" : "原始路径",
       "localizations" : {
@@ -24931,6 +25093,9 @@
           }
         }
       }
+    },
+    "Output:" : {
+
     },
     "pan-zoom" : {
       "comment" : "(放大后滚动变为平移)",
@@ -25467,6 +25632,9 @@
         }
       }
     },
+    "Pattern:" : {
+
+    },
     "Pen" : {
       "comment" : "画笔",
       "localizations" : {
@@ -25573,6 +25741,9 @@
           }
         }
       }
+    },
+    "Percentage" : {
+
     },
     "Pin Window" : {
       "comment" : "置顶",
@@ -25895,6 +26066,9 @@
         }
       }
     },
+    "Please select a destination folder" : {
+
+    },
     "Please select a specific tag" : {
       "comment" : "请选择具体的标签",
       "localizations" : {
@@ -26004,6 +26178,7 @@
     },
     "Portable Browsing Mode" : {
       "comment" : "便携浏览模式",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -26537,6 +26712,12 @@
         }
       }
     },
+    "Press key…" : {
+      "comment" : "按按键…"
+    },
+    "Preview:" : {
+
+    },
     "previous-folder" : {
       "comment" : "上一个目录",
       "localizations" : {
@@ -26753,6 +26934,7 @@
     },
     "previous-sibling-of-parent" : {
       "comment" : "上级的平级上一个目录",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -27071,6 +27253,9 @@
           }
         }
       }
+    },
+    "Quality:" : {
+
     },
     "Quick Search" : {
       "comment" : "快速搜索",
@@ -27713,6 +27898,9 @@
           }
         }
       }
+    },
+    "Recent Destinations (press 1-9):" : {
+
     },
     "recognize-OCR" : {
       "comment" : "识别文本",
@@ -29640,6 +29828,12 @@
         }
       }
     },
+    "Rename selected item" : {
+
+    },
+    "Renamed" : {
+
+    },
     "renaming-conflict" : {
       "comment" : "该名称的文件已存在，请选择其他名称。",
       "localizations" : {
@@ -30067,6 +30261,12 @@
           }
         }
       }
+    },
+    "Reset All to Defaults" : {
+      "comment" : "全部重置为默认值"
+    },
+    "Resize:" : {
+
     },
     "Reverse Filter" : {
       "comment" : "反转筛选",
@@ -30602,6 +30802,9 @@
           }
         }
       }
+    },
+    "Same Folder" : {
+
     },
     "Save" : {
       "comment" : "保存",
@@ -31780,6 +31983,12 @@
         }
       }
     },
+    "Select as Copy Destination" : {
+
+    },
+    "Select as Move Destination" : {
+
+    },
     "Sequential Playback" : {
       "comment" : "（视频）顺序播放",
       "localizations" : {
@@ -32103,6 +32312,7 @@
     },
     "Set Auto Play Interval" : {
       "comment" : "设置自动播放间隔",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -34348,6 +34558,9 @@
         }
       }
     },
+    "Shutter" : {
+
+    },
     "Sidebar" : {
       "comment" : "侧边栏",
       "localizations" : {
@@ -34455,6 +34668,9 @@
         }
       }
     },
+    "Size" : {
+
+    },
     "Skip" : {
       "comment" : "跳过",
       "localizations" : {
@@ -34561,6 +34777,15 @@
           }
         }
       }
+    },
+    "Slide" : {
+
+    },
+    "Slideshow" : {
+      "comment" : "幻灯片播放\n幻灯片设置"
+    },
+    "Software" : {
+
     },
     "Sort" : {
       "comment" : "排序",
@@ -38735,8 +38960,12 @@
         }
       }
     },
+    "Start:" : {
+
+    },
     "statistic-content" : {
       "comment" : "(统计内容)",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -39162,6 +39391,9 @@
           }
         }
       }
+    },
+    "Subfolder" : {
+
     },
     "Success" : {
       "comment" : "成功",
@@ -40019,6 +40251,9 @@
         }
       }
     },
+    "Synchronized" : {
+
+    },
     "Tag" : {
       "comment" : "标签",
       "localizations" : {
@@ -40232,6 +40467,9 @@
           }
         }
       }
+    },
+    "Tags" : {
+
     },
     "Text File" : {
       "comment" : "文本文件",
@@ -40768,6 +41006,15 @@
         }
       }
     },
+    "Toggle Sidebar" : {
+      "comment" : "切换侧边栏"
+    },
+    "Top Left" : {
+
+    },
+    "Top Right" : {
+
+    },
     "Total Size" : {
       "comment" : "总大小",
       "localizations" : {
@@ -40874,6 +41121,9 @@
           }
         }
       }
+    },
+    "Transition:" : {
+
     },
     "Undo" : {
       "comment" : "撤销",
@@ -42268,6 +42518,7 @@
     },
     "VideoMetadata-AvgFrameRate" : {
       "comment" : "平均帧率",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -42482,6 +42733,7 @@
     },
     "VideoMetadata-CodecLongName" : {
       "comment" : "编码器全名",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -43231,6 +43483,7 @@
     },
     "VideoMetadata-Height" : {
       "comment" : "高度",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -43445,6 +43698,7 @@
     },
     "VideoMetadata-Level" : {
       "comment" : "级别",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -43659,6 +43913,7 @@
     },
     "VideoMetadata-Profile" : {
       "comment" : "配置文件",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -43873,6 +44128,7 @@
     },
     "VideoMetadata-Width" : {
       "comment" : "宽度",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -44299,6 +44555,12 @@
         }
       }
     },
+    "Volume:" : {
+
+    },
+    "W:" : {
+
+    },
     "Waterfall View" : {
       "comment" : "瀑布流视图",
       "localizations" : {
@@ -44405,6 +44667,9 @@
           }
         }
       }
+    },
+    "White Balance" : {
+
     },
     "Window Title" : {
       "comment" : "窗口标题",

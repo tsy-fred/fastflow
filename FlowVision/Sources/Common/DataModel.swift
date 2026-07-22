@@ -7,15 +7,6 @@ import Foundation
 import Cocoa
 import BTree
 
-extension Map {
-    func elementSafe(atOffset offset: Int) -> Element? {
-        guard offset >= 0 && offset < count else {
-            return nil
-        }
-        return element(atOffset: offset)
-    }
-}
-
 class SortKeyFile: SortKey, NSCopying {
     func copy(with zone: NSZone? = nil) -> Any {
         let copy = SortKeyFile(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath, randomSeed: seed)

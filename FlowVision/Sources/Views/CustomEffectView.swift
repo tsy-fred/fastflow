@@ -3,16 +3,39 @@
 //  FlowVision
 //
 
-import Foundation
 import Cocoa
 
 class CustomEffectView: NSVisualEffectView {
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
+        applyGlassStyle()
         registerForDraggedTypes([.fileURL] + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
     }
-    
+
+    /// 应用设计系统的亚光玻璃样式
+    /// Apply design system frosted glass style
+    func applyGlassStyle() {
+        material = .hudWindow
+        state = .active
+        blendingMode = .withinWindow
+
+        wantsLayer = true
+        layer?.cornerRadius = DSCorner.medium
+        layer?.borderWidth = DSBorder.glass
+
+        let appearance = effectiveAppearance.name
+        layer?.borderColor = DSColor.glassBorder(for: appearance).cgColor
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        // 跟随系统外观更新边框颜色
+        // Update border color to follow system appearance
+        let appearance = effectiveAppearance.name
+        layer?.borderColor = DSColor.glassBorder(for: appearance).cgColor
+    }
+
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         if let viewController = getViewController(self){
             if viewController.publicVar.isInLargeView {
@@ -21,7 +44,7 @@ class CustomEffectView: NSVisualEffectView {
         }
         return .every
     }
-    
+
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         if let viewController = getViewController(self) {
             if viewController.publicVar.isInLargeView {
@@ -46,5 +69,4 @@ class CustomEffectView: NSVisualEffectView {
         }
         return false
     }
-    
 }

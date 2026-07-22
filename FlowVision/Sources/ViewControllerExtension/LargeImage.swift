@@ -939,6 +939,10 @@ extension ViewController {
             if publicVar.isShowExif && resetSize {
                 let exifData = convertExifData(file: file)
                 largeImageView.updateTextItems(formatExifData(exifData ?? [:], isVideo: globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()), needWarp: true))
+                // 更新现代化叠加层
+                // Update modern overlay
+                let overlayModules = InfoOverlayManager.shared.modules(for: file)
+                largeImageView.infoOverlayView.modules = overlayModules
             }
             
             // 用来对比异步任务是否过期

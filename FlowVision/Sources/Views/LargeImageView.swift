@@ -40,6 +40,9 @@ class LargeImageView: NSView {
     private var periodicTimeObserver: Any?
     
     var exifTextView: ExifTextView!
+    var infoOverlayView: InfoOverlayView!
+    private var infoOverlayXConstraint: NSLayoutConstraint!
+    private var infoOverlayYConstraint: NSLayoutConstraint!
     var ratioView: InfoView!
     var infoView: InfoView!
     var unsupportedVideoOverlay: NSView!
@@ -149,7 +152,21 @@ class LargeImageView: NSView {
             exifTextView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
             exifTextView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5)
         ])
-        
+
+        infoOverlayView = InfoOverlayView(frame: .zero)
+        infoOverlayView.translatesAutoresizingMaskIntoConstraints = false
+        infoOverlayView.isHidden = true
+        infoOverlayView.wantsLayer = true
+        addSubview(infoOverlayView)
+        infoOverlayXConstraint = infoOverlayView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -12)
+        infoOverlayYConstraint = infoOverlayView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -12)
+        NSLayoutConstraint.activate([
+            infoOverlayXConstraint,
+            infoOverlayYConstraint,
+            infoOverlayView.widthAnchor.constraint(greaterThanOrEqualToConstant: 180),
+        ])
+        updateInfoOverlayPosition()
+
         ratioView = InfoView(frame: .zero)
         ratioView.setupView(fontSize: 14, fontWeight: .regular, cornerRadius: 6.0, edge: (8,8))
         ratioView.translatesAutoresizingMaskIntoConstraints = false
@@ -315,6 +332,28 @@ class LargeImageView: NSView {
         }
 
         finderTagDotsView = container
+    }
+
+    /// 根据位置设置更新 InfoOverlayView 锚点
+    /// Update InfoOverlayView anchor based on position setting
+    func updateInfoOverlayPosition() {
+        let position = InfoOverlayManager.shared.overlayPosition
+        NSLayoutConstraint.deactivate([infoOverlayXConstraint, infoOverlayYConstraint])
+        switch position {
+        case .topLeft:
+            infoOverlayXConstraint = infoOverlayView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 12)
+            infoOverlayYConstraint = infoOverlayView.topAnchor.constraint(equalTo: self.topAnchor, constant: 12)
+        case .topRight:
+            infoOverlayXConstraint = infoOverlayView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -12)
+            infoOverlayYConstraint = infoOverlayView.topAnchor.constraint(equalTo: self.topAnchor, constant: 12)
+        case .bottomLeft:
+            infoOverlayXConstraint = infoOverlayView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 12)
+            infoOverlayYConstraint = infoOverlayView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -12)
+        case .bottomRight:
+            infoOverlayXConstraint = infoOverlayView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -12)
+            infoOverlayYConstraint = infoOverlayView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -12)
+        }
+        NSLayoutConstraint.activate([infoOverlayXConstraint, infoOverlayYConstraint])
     }
 
     /// 根据评级返回对应颜色（1–5 星：灰 → 银 → 橙 → 黄 → 金）

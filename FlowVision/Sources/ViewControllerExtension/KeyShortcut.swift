@@ -282,8 +282,8 @@ extension ViewController {
                 if publicVar.isInLargeView,
                    largeImageView.file.type == .video {
                     largeImageView.actABPlay()
+                    return nil
                 }
-                return nil
             }
 
             // 检查按键是否是 "L" 键
@@ -458,6 +458,11 @@ extension ViewController {
             // 检查按键是否是 Esc 键
             // Check if key is Esc
             if event.keyCode == 53 {
+                // 对比模式优先退出
+                if isCompareMode {
+                    exitCompareMode()
+                    return nil
+                }
                 if globalVar.isEscKeyToGoBack {                 
                     if publicVar.isInLargeView{
                         closeLargeImage(0)
@@ -731,17 +736,19 @@ extension ViewController {
                 }
             }
             
-            // 检查按键是否是 Tab 键
-            // Check if key is Tab
+            // Tab 键：大图模式下切换简洁模式，否则切换焦点
+            // Tab: toggle minimal mode in large view, otherwise switch focus
             if specialKey == .tab && noModifierKey {
-                if !publicVar.isInLargeView{
-                    if publicVar.isOutlineViewFirstResponder{
-                        view.window?.makeFirstResponder(collectionView)
-                        return nil
-                    }else if publicVar.isCollectionViewFirstResponder{
-                        view.window?.makeFirstResponder(outlineView)
-                        return nil
-                    }
+                if publicVar.isInLargeView {
+                    publicVar.isMinimalMode.toggle()
+                    return nil
+                }
+                if publicVar.isOutlineViewFirstResponder{
+                    view.window?.makeFirstResponder(collectionView)
+                    return nil
+                }else if publicVar.isCollectionViewFirstResponder{
+                    view.window?.makeFirstResponder(outlineView)
+                    return nil
                 }
             }
             
@@ -929,28 +936,85 @@ extension ViewController {
                 }
             }
             
-            // 检查按键是否是 "N" 键
-            // Check if key is "N"
-            if characters == "n" && noModifierKey {
-                // 如果焦点在CollectionView
-                // If focus is in CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleCopyToDownload()
-                    return nil
-                }
+        }
+        
+        // 检查可配置的快捷键（使用 KeyBindingManager）
+        // Check configurable shortcuts (using KeyBindingManager)
+        if publicVar.isCollectionViewFirstResponder || publicVar.isInLargeView {
+            let km = KeyBindingManager.shared
+            
+            // C — 复制到文件夹
+            // C — Copy to folder
+            if km.eventMatches(event, action: .copyToFolder) {
+                handleCopyToFolder()
+                return nil
             }
             
-            // 检查按键是否是 "M" 键
-            // Check if key is "M"
-            if characters == "m" && noModifierKey {
-                // 如果焦点在CollectionView
-                // If focus is in CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleMoveToDownload()
-                    return nil
-                }
+            // M — 移动到文件夹
+            // M — Move to folder
+            if km.eventMatches(event, action: .moveToFolder) {
+                handleMoveToFolder()
+                return nil
             }
             
+            // X — 删除
+            // X — Delete
+            if km.eventMatches(event, action: .delete) {
+                handleDelete()
+                return nil
+            }
+            
+            // N — 重命名
+            // N — Rename
+            if km.eventMatches(event, action: .rename) {
+                if publicVar.isCollectionViewFirstResponder {
+                    let urls = publicVar.selectedUrls()
+                    if !urls.isEmpty {
+                        handleRename(urls: urls)
+                    }
+                }
+                return nil
+            }
+            
+            // V — 粘贴
+            // V — Paste
+            if km.eventMatches(event, action: .paste) {
+                handlePaste()
+                return nil
+            }
+            
+            // B — 批量重命名
+            // B — Batch rename
+            if km.eventMatches(event, action: .batchRename) {
+                handleBatchRename()
+                return nil
+            }
+
+            if km.eventMatches(event, action: .batchConvert) {
+                handleBatchConvert()
+                return nil
+            }
+
+            // F — 切换侧边栏（无修饰键时）
+            // F — Toggle sidebar (no modifier)
+            if km.eventMatches(event, action: .toggleSidebar) && !publicVar.isInLargeView {
+                toggleSidebar()
+                return nil
+            }
+
+            // K — 对比模式
+            // K — Compare images
+            if km.eventMatches(event, action: .compareImages) {
+                handleCompare()
+                return nil
+            }
+
+            // S — 幻灯片播放
+            // S — Slideshow
+            if km.eventMatches(event, action: .slideshowToggle) {
+                toggleAutoPlay()
+                return nil
+            }
         }
         
         // 处理弹出重命名对话框、OCR状态的 Home/End 光标移动操作

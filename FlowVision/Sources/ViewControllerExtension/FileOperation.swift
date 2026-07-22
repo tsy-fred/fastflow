@@ -642,6 +642,39 @@ extension ViewController {
         restorePasteboard(items: backupItems)
     }
 
+    // MARK: - FastStone 式快捷操作
+    // MARK: - FastStone-style quick operations
+    
+    /// 复制到指定文件夹（键盘快捷键 C → 面板 → 再按 C 确认）
+    /// Copy to specified folder (key C → panel → press C again to confirm)
+    func handleCopyToFolder() {
+        QuickFolderSelector.show(
+            confirmKey: "c",
+            operationType: "copy"
+        ) { [weak self] destURL in
+            guard let self = self, let destURL = destURL else { return }
+            let backupItems = self.backupPasteboard()
+            self.handleCopy()
+            self.handlePaste(targetURL: destURL)
+            self.restorePasteboard(items: backupItems)
+        }
+    }
+
+    /// 移动到指定文件夹（键盘快捷键 M → 面板 → 再按 M 确认）
+    /// Move to specified folder (key M → panel → press M again to confirm)
+    func handleMoveToFolder() {
+        QuickFolderSelector.show(
+            confirmKey: "m",
+            operationType: "move"
+        ) { [weak self] destURL in
+            guard let self = self, let destURL = destURL else { return }
+            let backupItems = self.backupPasteboard()
+            self.handleCopy()
+            self.handleMove(targetURL: destURL)
+            self.restorePasteboard(items: backupItems)
+        }
+    }
+
     func handleMove(targetURL: URL? = nil, pasteboard: NSPasteboard = NSPasteboard.general) {
         
         // 重置剪切模式，防止直接调用handleMove后isCutMode残留为true
