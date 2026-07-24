@@ -1,38 +1,65 @@
 import Cocoa
 import ImageIO
 import UniformTypeIdentifiers
+import CoreImage
 
 /// 批量转换面板
 /// Batch convert panel
-class BatchConvertPanel: NSWindowController {
+class BatchConvertPanel: NSWindowController, NSTextFieldDelegate {
 
     private var urls: [URL] = []
+    private var completion: (() -> Void)?
 
+    // UI elements
     private var formatPopup: NSPopUpButton!
     private var qualitySlider: NSSlider!
     private var qualityLabel: NSTextField!
     private var resizePopup: NSPopUpButton!
+    private var sizeField: NSTextField!
     private var widthField: NSTextField!
     private var heightField: NSTextField!
+    private var sizeFieldLabel: NSTextField!
+    private var presetStack: NSStackView!
+    private var pctSlider: NSSlider!
+    private var pctSliderLabel: NSTextField!
     private var outputPopup: NSPopUpButton!
     private var subfolderField: NSTextField!
     private var trashCheckbox: NSButton!
     private var infoLabel: NSTextField!
-    private var completion: (() -> Void)?
+
+    private var sizeSingleRow: NSView!
+    private var sizeDoubleRow: NSView!
+    private var pctSliderRow: NSView!
 
     private let formatKey = "batchConvertFormat"
     private let qualityKey = "batchConvertQuality"
-    private let resizeModeKey = "batchConvertResizeMode"
+    private let resizeModeKey = "batchConvertResizeModeV2"
+    private let resizeValueKey = "batchConvertResizeValue"
     private let subfolderKey = "batchConvertSubfolder"
     private let trashSourceKey = "batchConvertTrashSource"
 
     private static var currentPanel: BatchConvertPanel?
 
-    private enum ResizeMode: Int {
+    private lazy var ciContext: CIContext = {
+        CIContext(options: [.highQualityDownsample: true, .workingColorSpace: NSNull()])
+    }()
+
+    private enum ResizeMode: Int, CaseIterable {
         case none = 0
-        case maxDimension = 1
-        case percentage = 2
-        case exact = 3
+        case longestSide = 1
+        case shortestSide = 2
+        case percentage = 3
+        case exact = 4
+
+        var label: String {
+            switch self {
+            case .none: return NSLocalizedString("None", comment: "")
+            case .longestSide: return NSLocalizedString("Longest Side", comment: "最长边")
+            case .shortestSide: return NSLocalizedString("Shortest Side", comment: "最短边")
+            case .percentage: return NSLocalizedString("Percentage", comment: "百分比")
+            case .exact: return NSLocalizedString("Exact Size", comment: "精确尺寸")
+            }
+        }
     }
 
     private init(urls: [URL], completion: @escaping () -> Void) {
@@ -40,7 +67,7 @@ class BatchConvertPanel: NSWindowController {
         self.completion = completion
 
         let panel = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 480, height: 400),
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 380),
             styleMask: [.titled, .closable, .resizable],
             backing: .buffered, defer: false
         )
@@ -55,7 +82,7 @@ class BatchConvertPanel: NSWindowController {
         super.init(window: panel)
 
         panel.contentView = buildContentView()
-        panel.setContentSize(NSSize(width: 480, height: 400))
+        panel.setContentSize(NSSize(width: 480, height: 380))
         panel.center()
         panel.title = ""
         panel.invalidateShadow()
@@ -78,7 +105,7 @@ class BatchConvertPanel: NSWindowController {
         stack.orientation = .vertical
         stack.spacing = 10
         stack.alignment = .leading
-        stack.edgeInsets = NSEdgeInsets(top: 16, left: 24, bottom: 52, right: 24)
+        stack.edgeInsets = NSEdgeInsets(top: 16, left: 24, bottom: 48, right: 24)
         stack.translatesAutoresizingMaskIntoConstraints = false
 
         let defaults = UserDefaults.standard
@@ -88,8 +115,57 @@ class BatchConvertPanel: NSWindowController {
         titleLabel.font = NSFont.boldSystemFont(ofSize: 14)
 
         // Format row
-        let fmtRow = NSView()
-        fmtRow.translatesAutoresizingMaskIntoConstraints = false
+        let fmtRow = buildFormatRow(defaults: defaults)
+
+        // Resize section
+        let resizeSection = buildResizeSection(defaults: defaults)
+
+        // Output section
+        let outputSection = buildOutputSection(defaults: defaults)
+
+        // Separator
+        let sep = NSBox()
+        sep.boxType = .separator
+
+        // Info
+        infoLabel = NSTextField(labelWithString: "")
+        infoLabel.font = NSFont.systemFont(ofSize: 11)
+        infoLabel.textColor = .secondaryLabelColor
+
+        // Buttons
+        let btnRow = buildButtonRow()
+
+        // Assemble
+        stack.addArrangedSubview(titleLabel)
+        stack.setCustomSpacing(4, after: titleLabel)
+        stack.addArrangedSubview(fmtRow)
+        stack.addArrangedSubview(resizeSection)
+        stack.addArrangedSubview(outputSection)
+        stack.setCustomSpacing(4, after: outputSection)
+        stack.addArrangedSubview(sep)
+        stack.addArrangedSubview(infoLabel)
+        stack.addArrangedSubview(btnRow)
+
+        for v in [titleLabel, fmtRow, resizeSection, outputSection, sep, infoLabel] as [NSView] {
+            v.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+        }
+
+        root.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.leadingAnchor.constraint(equalTo: root.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: root.trailingAnchor),
+            stack.topAnchor.constraint(equalTo: root.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: root.bottomAnchor),
+        ])
+
+        updateInfo()
+        updateResizeUI()
+        return root
+    }
+
+    private func buildFormatRow(defaults: UserDefaults) -> NSView {
+        let row = NSView()
+        row.translatesAutoresizingMaskIntoConstraints = false
 
         let fmtLabel = NSTextField(labelWithString: NSLocalizedString("Format:", comment: ""))
         fmtLabel.font = NSFont.systemFont(ofSize: 12)
@@ -113,48 +189,116 @@ class BatchConvertPanel: NSWindowController {
         qualityLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .regular)
         qualityLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        fmtRow.addSubview(fmtLabel)
-        fmtRow.addSubview(formatPopup)
-        fmtRow.addSubview(qualLabel)
-        fmtRow.addSubview(qualitySlider)
-        fmtRow.addSubview(qualityLabel)
+        row.addSubview(fmtLabel)
+        row.addSubview(formatPopup)
+        row.addSubview(qualLabel)
+        row.addSubview(qualitySlider)
+        row.addSubview(qualityLabel)
         NSLayoutConstraint.activate([
-            fmtRow.heightAnchor.constraint(equalToConstant: 24),
-            fmtLabel.leadingAnchor.constraint(equalTo: fmtRow.leadingAnchor),
-            fmtLabel.centerYAnchor.constraint(equalTo: fmtRow.centerYAnchor),
+            row.heightAnchor.constraint(equalToConstant: 24),
+            fmtLabel.leadingAnchor.constraint(equalTo: row.leadingAnchor),
+            fmtLabel.centerYAnchor.constraint(equalTo: row.centerYAnchor),
             fmtLabel.widthAnchor.constraint(equalToConstant: 60),
             formatPopup.leadingAnchor.constraint(equalTo: fmtLabel.trailingAnchor, constant: 8),
-            formatPopup.centerYAnchor.constraint(equalTo: fmtRow.centerYAnchor),
+            formatPopup.centerYAnchor.constraint(equalTo: row.centerYAnchor),
             formatPopup.widthAnchor.constraint(equalToConstant: 90),
             qualLabel.leadingAnchor.constraint(equalTo: formatPopup.trailingAnchor, constant: 16),
-            qualLabel.centerYAnchor.constraint(equalTo: fmtRow.centerYAnchor),
+            qualLabel.centerYAnchor.constraint(equalTo: row.centerYAnchor),
             qualitySlider.leadingAnchor.constraint(equalTo: qualLabel.trailingAnchor, constant: 6),
-            qualitySlider.centerYAnchor.constraint(equalTo: fmtRow.centerYAnchor),
+            qualitySlider.centerYAnchor.constraint(equalTo: row.centerYAnchor),
             qualitySlider.widthAnchor.constraint(equalToConstant: 100),
             qualityLabel.leadingAnchor.constraint(equalTo: qualitySlider.trailingAnchor, constant: 4),
-            qualityLabel.centerYAnchor.constraint(equalTo: fmtRow.centerYAnchor),
+            qualityLabel.centerYAnchor.constraint(equalTo: row.centerYAnchor),
             qualityLabel.widthAnchor.constraint(equalToConstant: 36),
         ])
+        return row
+    }
 
-        // Resize row
-        let resRow = NSView()
-        resRow.translatesAutoresizingMaskIntoConstraints = false
+    private func buildResizeSection(defaults: UserDefaults) -> NSView {
+        let section = NSView()
+        section.translatesAutoresizingMaskIntoConstraints = false
 
-        let resizeLabel = NSTextField(labelWithString: NSLocalizedString("Resize:", comment: ""))
-        resizeLabel.font = NSFont.systemFont(ofSize: 12)
-        resizeLabel.translatesAutoresizingMaskIntoConstraints = false
+        let header = NSTextField(labelWithString: NSLocalizedString("Resize", comment: ""))
+        header.font = NSFont.boldSystemFont(ofSize: 12)
+        header.translatesAutoresizingMaskIntoConstraints = false
+
+        let sepLine = NSBox()
+        sepLine.boxType = .separator
+        sepLine.translatesAutoresizingMaskIntoConstraints = false
+
+        let modeRow = NSView()
+        modeRow.translatesAutoresizingMaskIntoConstraints = false
+
+        let modeLabel = NSTextField(labelWithString: NSLocalizedString("Mode:", comment: ""))
+        modeLabel.font = NSFont.systemFont(ofSize: 12)
+        modeLabel.translatesAutoresizingMaskIntoConstraints = false
 
         resizePopup = NSPopUpButton()
-        resizePopup.addItems(withTitles: [
-            NSLocalizedString("None", comment: ""),
-            NSLocalizedString("Max Dimension", comment: ""),
-            NSLocalizedString("Percentage", comment: ""),
-            NSLocalizedString("Exact Size", comment: "")
-        ])
-        resizePopup.selectItem(at: min(defaults.integer(forKey: resizeModeKey), 3))
+        resizePopup.addItems(withTitles: ResizeMode.allCases.map { $0.label })
+        let savedMode = defaults.integer(forKey: resizeModeKey)
+        resizePopup.selectItem(at: savedMode < ResizeMode.allCases.count ? savedMode : 0)
         resizePopup.target = self
         resizePopup.action = #selector(resizeChanged)
         resizePopup.translatesAutoresizingMaskIntoConstraints = false
+
+        modeRow.addSubview(modeLabel)
+        modeRow.addSubview(resizePopup)
+        NSLayoutConstraint.activate([
+            modeRow.heightAnchor.constraint(equalToConstant: 24),
+            modeLabel.leadingAnchor.constraint(equalTo: modeRow.leadingAnchor),
+            modeLabel.centerYAnchor.constraint(equalTo: modeRow.centerYAnchor),
+            modeLabel.widthAnchor.constraint(equalToConstant: 60),
+            resizePopup.leadingAnchor.constraint(equalTo: modeLabel.trailingAnchor, constant: 8),
+            resizePopup.centerYAnchor.constraint(equalTo: modeRow.centerYAnchor),
+            resizePopup.widthAnchor.constraint(equalToConstant: 130),
+        ])
+
+        let singleRow = NSView()
+        singleRow.translatesAutoresizingMaskIntoConstraints = false
+
+        sizeFieldLabel = NSTextField(labelWithString: NSLocalizedString("Max:", comment: ""))
+        sizeFieldLabel.font = NSFont.systemFont(ofSize: 11)
+        sizeFieldLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        sizeField = NSTextField()
+        sizeField.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
+        sizeField.placeholderString = "px"
+        let savedValue = defaults.integer(forKey: resizeValueKey)
+        let defaultPx = savedValue > 0 ? savedValue : 1920
+        let isPctDefault = savedMode == ResizeMode.percentage.rawValue
+        sizeField.integerValue = isPctDefault ? defaultPx.nonZero(100) : defaultPx
+        sizeField.delegate = self
+        sizeField.translatesAutoresizingMaskIntoConstraints = false
+
+        presetStack = NSStackView()
+        presetStack.orientation = .horizontal
+        presetStack.spacing = 6
+        presetStack.alignment = .centerY
+        presetStack.translatesAutoresizingMaskIntoConstraints = false
+        for pct in [25, 50, 75, 100, 150, 200] {
+            let btn = NSButton(title: "\(pct)%", target: self, action: #selector(presetClicked(_:)))
+            btn.bezelStyle = .inline
+            btn.controlSize = .small
+            btn.translatesAutoresizingMaskIntoConstraints = false
+            presetStack.addArrangedSubview(btn)
+        }
+
+        singleRow.addSubview(sizeFieldLabel)
+        singleRow.addSubview(sizeField)
+        singleRow.addSubview(presetStack)
+        NSLayoutConstraint.activate([
+            singleRow.heightAnchor.constraint(equalToConstant: 24),
+            sizeFieldLabel.leadingAnchor.constraint(equalTo: singleRow.leadingAnchor, constant: 68),
+            sizeFieldLabel.centerYAnchor.constraint(equalTo: singleRow.centerYAnchor),
+            sizeField.leadingAnchor.constraint(equalTo: sizeFieldLabel.trailingAnchor, constant: 4),
+            sizeField.centerYAnchor.constraint(equalTo: singleRow.centerYAnchor),
+            sizeField.widthAnchor.constraint(equalToConstant: 60),
+            presetStack.leadingAnchor.constraint(equalTo: sizeField.trailingAnchor, constant: 10),
+            presetStack.centerYAnchor.constraint(equalTo: singleRow.centerYAnchor),
+        ])
+
+        let doubleRow = NSView()
+        doubleRow.translatesAutoresizingMaskIntoConstraints = false
 
         let wLabel = NSTextField(labelWithString: NSLocalizedString("W:", comment: ""))
         wLabel.font = NSFont.systemFont(ofSize: 11)
@@ -174,37 +318,100 @@ class BatchConvertPanel: NSWindowController {
         heightField.placeholderString = "px"
         heightField.translatesAutoresizingMaskIntoConstraints = false
 
-        resRow.addSubview(resizeLabel)
-        resRow.addSubview(resizePopup)
-        resRow.addSubview(wLabel)
-        resRow.addSubview(widthField)
-        resRow.addSubview(hLabel)
-        resRow.addSubview(heightField)
+        doubleRow.addSubview(wLabel)
+        doubleRow.addSubview(widthField)
+        doubleRow.addSubview(hLabel)
+        doubleRow.addSubview(heightField)
         NSLayoutConstraint.activate([
-            resRow.heightAnchor.constraint(equalToConstant: 24),
-            resizeLabel.leadingAnchor.constraint(equalTo: resRow.leadingAnchor),
-            resizeLabel.centerYAnchor.constraint(equalTo: resRow.centerYAnchor),
-            resizeLabel.widthAnchor.constraint(equalToConstant: 60),
-            resizePopup.leadingAnchor.constraint(equalTo: resizeLabel.trailingAnchor, constant: 8),
-            resizePopup.centerYAnchor.constraint(equalTo: resRow.centerYAnchor),
-            resizePopup.widthAnchor.constraint(equalToConstant: 130),
-            wLabel.leadingAnchor.constraint(equalTo: resizePopup.trailingAnchor, constant: 12),
-            wLabel.centerYAnchor.constraint(equalTo: resRow.centerYAnchor),
+            doubleRow.heightAnchor.constraint(equalToConstant: 24),
+            wLabel.leadingAnchor.constraint(equalTo: doubleRow.leadingAnchor, constant: 68),
+            wLabel.centerYAnchor.constraint(equalTo: doubleRow.centerYAnchor),
             widthField.leadingAnchor.constraint(equalTo: wLabel.trailingAnchor, constant: 4),
-            widthField.centerYAnchor.constraint(equalTo: resRow.centerYAnchor),
-            widthField.widthAnchor.constraint(equalToConstant: 48),
-            hLabel.leadingAnchor.constraint(equalTo: widthField.trailingAnchor, constant: 8),
-            hLabel.centerYAnchor.constraint(equalTo: resRow.centerYAnchor),
+            widthField.centerYAnchor.constraint(equalTo: doubleRow.centerYAnchor),
+            widthField.widthAnchor.constraint(equalToConstant: 60),
+            hLabel.leadingAnchor.constraint(equalTo: widthField.trailingAnchor, constant: 10),
+            hLabel.centerYAnchor.constraint(equalTo: doubleRow.centerYAnchor),
             heightField.leadingAnchor.constraint(equalTo: hLabel.trailingAnchor, constant: 4),
-            heightField.centerYAnchor.constraint(equalTo: resRow.centerYAnchor),
-            heightField.widthAnchor.constraint(equalToConstant: 48),
+            heightField.centerYAnchor.constraint(equalTo: doubleRow.centerYAnchor),
+            heightField.widthAnchor.constraint(equalToConstant: 60),
         ])
 
-        // Output row
+        // Percentage slider row
+        let sliderRow = NSView()
+        sliderRow.translatesAutoresizingMaskIntoConstraints = false
+
+        let initPct = isPctDefault ? sizeField.integerValue : 100
+        pctSlider = NSSlider(value: Double(initPct), minValue: 10, maxValue: 400, target: self, action: #selector(pctSliderChanged))
+        pctSlider.translatesAutoresizingMaskIntoConstraints = false
+        pctSlider.widthAnchor.constraint(equalToConstant: 200).isActive = true
+
+        pctSliderLabel = NSTextField(labelWithString: "100%")
+        pctSliderLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .regular)
+        pctSliderLabel.translatesAutoresizingMaskIntoConstraints = false
+        pctSliderLabel.widthAnchor.constraint(equalToConstant: 36).isActive = true
+
+        sliderRow.addSubview(pctSlider)
+        sliderRow.addSubview(pctSliderLabel)
+        NSLayoutConstraint.activate([
+            sliderRow.heightAnchor.constraint(equalToConstant: 24),
+            pctSlider.leadingAnchor.constraint(equalTo: sliderRow.leadingAnchor, constant: 68),
+            pctSlider.centerYAnchor.constraint(equalTo: sliderRow.centerYAnchor),
+            pctSliderLabel.leadingAnchor.constraint(equalTo: pctSlider.trailingAnchor, constant: 6),
+            pctSliderLabel.centerYAnchor.constraint(equalTo: sliderRow.centerYAnchor),
+        ])
+
+        self.pctSliderRow = sliderRow
+        self.sizeSingleRow = singleRow
+        self.sizeDoubleRow = doubleRow
+
+        section.addSubview(header)
+        section.addSubview(sepLine)
+        section.addSubview(modeRow)
+        section.addSubview(singleRow)
+        section.addSubview(sliderRow)
+        section.addSubview(doubleRow)
+
+        NSLayoutConstraint.activate([
+            header.topAnchor.constraint(equalTo: section.topAnchor),
+            header.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            header.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            sepLine.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 4),
+            sepLine.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            sepLine.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            modeRow.topAnchor.constraint(equalTo: sepLine.bottomAnchor, constant: 6),
+            modeRow.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            modeRow.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            singleRow.topAnchor.constraint(equalTo: modeRow.bottomAnchor, constant: 4),
+            singleRow.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            singleRow.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            sliderRow.topAnchor.constraint(equalTo: singleRow.bottomAnchor),
+            sliderRow.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            sliderRow.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            doubleRow.topAnchor.constraint(equalTo: sliderRow.bottomAnchor),
+            doubleRow.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            doubleRow.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            doubleRow.bottomAnchor.constraint(equalTo: section.bottomAnchor),
+        ])
+
+        return section
+    }
+
+    private func buildOutputSection(defaults: UserDefaults) -> NSView {
+        let section = NSView()
+        section.translatesAutoresizingMaskIntoConstraints = false
+
+        let header = NSTextField(labelWithString: NSLocalizedString("Output", comment: ""))
+        header.font = NSFont.boldSystemFont(ofSize: 12)
+        header.translatesAutoresizingMaskIntoConstraints = false
+
+        let sepLine = NSBox()
+        sepLine.boxType = .separator
+        sepLine.translatesAutoresizingMaskIntoConstraints = false
+
         let outRow = NSView()
         outRow.translatesAutoresizingMaskIntoConstraints = false
 
-        let outLabel = NSTextField(labelWithString: NSLocalizedString("Output:", comment: ""))
+        let outLabel = NSTextField(labelWithString: NSLocalizedString("Location:", comment: ""))
         outLabel.font = NSFont.systemFont(ofSize: 12)
         outLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -240,18 +447,47 @@ class BatchConvertPanel: NSWindowController {
             subfolderField.widthAnchor.constraint(equalToConstant: 120),
         ])
 
-        // Separator
-        let sep = NSBox()
-        sep.boxType = .separator
+        let trashRow = NSView()
+        trashRow.translatesAutoresizingMaskIntoConstraints = false
 
-        // Info
-        infoLabel = NSTextField(labelWithString: "")
-        infoLabel.font = NSFont.systemFont(ofSize: 11)
-        infoLabel.textColor = .secondaryLabelColor
+        trashCheckbox = NSButton(checkboxWithTitle: NSLocalizedString("Move original to Trash after conversion", comment: ""), target: self, action: #selector(trashToggled))
+        trashCheckbox.state = defaults.bool(forKey: trashSourceKey) ? .on : .off
+        trashCheckbox.translatesAutoresizingMaskIntoConstraints = false
 
-        // Buttons
-        let btnRow = NSView()
-        btnRow.translatesAutoresizingMaskIntoConstraints = false
+        trashRow.addSubview(trashCheckbox)
+        NSLayoutConstraint.activate([
+            trashRow.heightAnchor.constraint(equalToConstant: 24),
+            trashCheckbox.leadingAnchor.constraint(equalTo: trashRow.leadingAnchor, constant: 60),
+            trashCheckbox.centerYAnchor.constraint(equalTo: trashRow.centerYAnchor),
+        ])
+
+        section.addSubview(header)
+        section.addSubview(sepLine)
+        section.addSubview(outRow)
+        section.addSubview(trashRow)
+
+        NSLayoutConstraint.activate([
+            header.topAnchor.constraint(equalTo: section.topAnchor),
+            header.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            header.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            sepLine.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 4),
+            sepLine.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            sepLine.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            outRow.topAnchor.constraint(equalTo: sepLine.bottomAnchor, constant: 6),
+            outRow.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            outRow.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            trashRow.topAnchor.constraint(equalTo: outRow.bottomAnchor, constant: 4),
+            trashRow.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            trashRow.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            trashRow.bottomAnchor.constraint(equalTo: section.bottomAnchor),
+        ])
+
+        return section
+    }
+
+    private func buildButtonRow() -> NSView {
+        let row = NSView()
+        row.translatesAutoresizingMaskIntoConstraints = false
 
         let cancelBtn = NSButton(title: NSLocalizedString("Cancel", comment: ""), target: self, action: #selector(cancel))
         cancelBtn.bezelStyle = .push
@@ -262,65 +498,17 @@ class BatchConvertPanel: NSWindowController {
         convertBtn.keyEquivalent = "\r"
         convertBtn.translatesAutoresizingMaskIntoConstraints = false
 
-        btnRow.addSubview(cancelBtn)
-        btnRow.addSubview(convertBtn)
+        row.addSubview(cancelBtn)
+        row.addSubview(convertBtn)
         NSLayoutConstraint.activate([
-            btnRow.heightAnchor.constraint(equalToConstant: 28),
+            row.heightAnchor.constraint(equalToConstant: 28),
             cancelBtn.trailingAnchor.constraint(equalTo: convertBtn.leadingAnchor, constant: -8),
-            cancelBtn.centerYAnchor.constraint(equalTo: btnRow.centerYAnchor),
-            convertBtn.trailingAnchor.constraint(equalTo: btnRow.trailingAnchor),
-            convertBtn.centerYAnchor.constraint(equalTo: btnRow.centerYAnchor),
-            btnRow.widthAnchor.constraint(equalToConstant: 180),
+            cancelBtn.centerYAnchor.constraint(equalTo: row.centerYAnchor),
+            convertBtn.trailingAnchor.constraint(equalTo: row.trailingAnchor),
+            convertBtn.centerYAnchor.constraint(equalTo: row.centerYAnchor),
+            row.widthAnchor.constraint(equalToConstant: 180),
         ])
-
-        // Assemble
-        stack.addArrangedSubview(titleLabel)
-        stack.setCustomSpacing(4, after: titleLabel)
-        stack.addArrangedSubview(fmtRow)
-        stack.addArrangedSubview(resRow)
-        stack.addArrangedSubview(outRow)
-        stack.setCustomSpacing(4, after: outRow)
-
-        // Trash checkbox
-        let trashRow = NSView()
-        trashRow.translatesAutoresizingMaskIntoConstraints = false
-
-        trashCheckbox = NSButton(checkboxWithTitle: NSLocalizedString("Move original to Trash after conversion", comment: ""), target: self, action: #selector(trashToggled))
-        trashCheckbox.state = UserDefaults.standard.bool(forKey: trashSourceKey) ? .on : .off
-        trashCheckbox.translatesAutoresizingMaskIntoConstraints = false
-
-        trashRow.addSubview(trashCheckbox)
-        NSLayoutConstraint.activate([
-            trashRow.heightAnchor.constraint(equalToConstant: 24),
-            trashCheckbox.leadingAnchor.constraint(equalTo: trashRow.leadingAnchor, constant: 60),
-            trashCheckbox.centerYAnchor.constraint(equalTo: trashRow.centerYAnchor),
-        ])
-
-        stack.addArrangedSubview(trashRow)
-        stack.setCustomSpacing(6, after: trashRow)
-        stack.addArrangedSubview(sep)
-        stack.addArrangedSubview(infoLabel)
-        stack.addArrangedSubview(btnRow)
-
-        titleLabel.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        fmtRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        resRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        outRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        trashRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        sep.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        infoLabel.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        root.addSubview(stack)
-        NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: root.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            stack.topAnchor.constraint(equalTo: root.topAnchor),
-            stack.bottomAnchor.constraint(equalTo: root.bottomAnchor),
-        ])
-
-        updateInfo()
-        updateResizeFieldsVisibility()
-        return root
+        return row
     }
 
     // MARK: - Actions
@@ -337,15 +525,30 @@ class BatchConvertPanel: NSWindowController {
     }
 
     @objc private func resizeChanged() {
-        updateResizeFieldsVisibility()
+        updateResizeUI()
         updateInfo()
     }
 
-    private func updateResizeFieldsVisibility() {
+    @objc private func presetClicked(_ sender: NSButton) {
+        let pct = Int(sender.title.trimmingCharacters(in: CharacterSet(charactersIn: "%"))) ?? 100
+        sizeField.integerValue = pct
+        pctSlider?.doubleValue = Double(pct)
+        pctSliderLabel?.stringValue = "\(pct)%"
+    }
+
+    @objc private func pctSliderChanged() {
+        let pct = Int(pctSlider.integerValue)
+        sizeField.integerValue = pct
+        pctSliderLabel.stringValue = "\(pct)%"
+    }
+
+    func controlTextDidChange(_ obj: Notification) {
+        guard let field = obj.object as? NSTextField, field === sizeField else { return }
         let mode = ResizeMode(rawValue: resizePopup.indexOfSelectedItem) ?? .none
-        let hasSizeFields = mode == .maxDimension || mode == .exact
-        widthField.isHidden = !hasSizeFields
-        heightField.isHidden = !hasSizeFields
+        if mode == .percentage {
+            pctSlider?.doubleValue = Double(field.integerValue)
+            pctSliderLabel?.stringValue = "\(field.integerValue)%"
+        }
     }
 
     @objc private func trashToggled() {
@@ -375,12 +578,37 @@ class BatchConvertPanel: NSWindowController {
         infoLabel.stringValue = "\(urls.count) \(NSLocalizedString("files → ", comment: ""))\(fmt)\(trash)"
     }
 
+    private func updateResizeUI() {
+        let mode = ResizeMode(rawValue: resizePopup.indexOfSelectedItem) ?? .none
+
+        let showsSingle = mode == .longestSide || mode == .shortestSide || mode == .percentage
+        sizeSingleRow.isHidden = !showsSingle
+        presetStack.isHidden = mode != .percentage
+        pctSliderRow.isHidden = mode != .percentage
+
+        if showsSingle {
+            switch mode {
+            case .longestSide:
+                sizeFieldLabel.stringValue = NSLocalizedString("Max:", comment: "")
+                sizeField.placeholderString = "px"
+            case .shortestSide:
+                sizeFieldLabel.stringValue = NSLocalizedString("Min:", comment: "")
+                sizeField.placeholderString = "px"
+            case .percentage:
+                sizeFieldLabel.stringValue = "%"
+                sizeField.placeholderString = "100"
+            default:
+                break
+            }
+        }
+
+        sizeDoubleRow.isHidden = mode != .exact
+    }
+
     @objc private func doConvert() {
         let fmtIndex = formatPopup.indexOfSelectedItem
         let quality = qualitySlider.integerValue
         let resizeMode = ResizeMode(rawValue: resizePopup.indexOfSelectedItem) ?? .none
-        let maxW = CGFloat(widthField?.integerValue ?? 0)
-        let maxH = CGFloat(heightField?.integerValue ?? 0)
         let subfolder = subfolderField?.stringValue ?? "converted"
 
         let defaults = UserDefaults.standard
@@ -388,6 +616,9 @@ class BatchConvertPanel: NSWindowController {
         defaults.set(quality, forKey: qualityKey)
         defaults.set(resizeMode.rawValue, forKey: resizeModeKey)
         defaults.set(subfolder, forKey: subfolderKey)
+        if resizeMode == .percentage || resizeMode == .longestSide || resizeMode == .shortestSide {
+            defaults.set(sizeField.integerValue, forKey: resizeValueKey)
+        }
 
         let fm = FileManager.default
         var convertedCount = 0
@@ -408,7 +639,6 @@ class BatchConvertPanel: NSWindowController {
                 outputDir = URL(fileURLWithPath: customPath)
             }
 
-            let uttypes = ["public.jpeg", "public.png", "public.tiff", "org.webmproject.webp"]
             let ext = ["jpg", "png", "tiff", "webp"][fmtIndex]
             let baseName = url.deletingPathExtension().lastPathComponent
             let destURL = outputDir.appendingPathComponent("\(baseName).\(ext)")
@@ -426,36 +656,53 @@ class BatchConvertPanel: NSWindowController {
                 var newH = h
 
                 switch resizeMode {
-                case .maxDimension:
-                    let maxDim = max(maxW, maxH)
-                    if maxDim > 0 && (w > maxDim || h > maxDim) {
-                        let ratio = min(maxDim / w, maxDim / h)
-                        newW = w * ratio
-                        newH = h * ratio
+                case .longestSide:
+                    let target = CGFloat(sizeField?.integerValue ?? 0)
+                    if target > 0 {
+                        if w >= h {
+                            let ratio = target / w
+                            newW = target
+                            newH = h * ratio
+                        } else {
+                            let ratio = target / h
+                            newW = w * ratio
+                            newH = target
+                        }
+                    }
+                case .shortestSide:
+                    let target = CGFloat(sizeField?.integerValue ?? 0)
+                    if target > 0 {
+                        if w <= h {
+                            let ratio = target / w
+                            newW = target
+                            newH = h * ratio
+                        } else {
+                            let ratio = target / h
+                            newW = w * ratio
+                            newH = target
+                        }
                     }
                 case .percentage:
-                    let pct = maxW > 0 ? maxW / 100.0 : 1.0
-                    newW = w * pct
-                    newH = h * pct
+                    let pct = CGFloat(sizeField?.integerValue ?? 100)
+                    if pct > 0 {
+                        newW = w * pct / 100.0
+                        newH = h * pct / 100.0
+                    }
                 case .exact:
-                    newW = maxW > 0 ? maxW : w
-                    newH = maxH > 0 ? maxH : h
+                    newW = CGFloat(widthField?.integerValue ?? 0)
+                    newH = CGFloat(heightField?.integerValue ?? 0)
+                    if newW <= 0 { newW = w }
+                    if newH <= 0 { newH = h }
                 default:
                     break
                 }
 
                 if newW != w || newH != h {
-                    let colorSpace = image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
-                    let bpc = image.bitsPerComponent
-                    let bitmapInfo = image.bitmapInfo
-                    if let ctx = CGContext(data: nil, width: Int(newW), height: Int(newH), bitsPerComponent: bpc, bytesPerRow: 0, space: colorSpace, bitmapInfo: bitmapInfo.rawValue),
-                       let imgRef = ctx.makeImage() {
-                        finalImage = imgRef
-                    }
+                    finalImage = scaleImageLanczos(image, width: Int(newW), height: Int(newH))
                 }
             }
 
-            let uttype = uttypes[fmtIndex] as CFString
+            let uttype = ["public.jpeg", "public.png", "public.tiff", "org.webmproject.webp"][fmtIndex] as CFString
             guard let dest = CGImageDestinationCreateWithURL(destURL as CFURL, uttype, 1, nil) else {
                 errors.append(url.lastPathComponent)
                 continue
@@ -489,6 +736,44 @@ class BatchConvertPanel: NSWindowController {
         }
 
         completion?()
+    }
+
+    /// 使用 Lanczos 算法高质量缩放图片
+    /// High-quality image scaling using Lanczos algorithm
+    private func scaleImageLanczos(_ image: CGImage, width: Int, height: Int) -> CGImage {
+        let ow = CGFloat(image.width)
+        let oh = CGFloat(image.height)
+        let nw = CGFloat(width)
+        let nh = CGFloat(height)
+
+        let ciImage = CIImage(cgImage: image)
+
+        guard let filter = CIFilter(name: "CILanczosScaleTransform") else {
+            let colorSpace = image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
+            let bpc = image.bitsPerComponent
+            let bitmapInfo = image.bitmapInfo
+            if let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: bpc, bytesPerRow: 0, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) {
+                ctx.interpolationQuality = .high
+                ctx.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
+                if let result = ctx.makeImage() {
+                    return result
+                }
+            }
+            return image
+        }
+
+        let scale = nh / oh
+        let aspectRatio = (nw * oh) / (ow * nh)
+
+        filter.setValue(ciImage, forKey: kCIInputImageKey)
+        filter.setValue(scale, forKey: kCIInputScaleKey)
+        filter.setValue(aspectRatio, forKey: kCIInputAspectRatioKey)
+
+        guard let output = filter.outputImage,
+              let cgImage = ciContext.createCGImage(output, from: output.extent) else {
+            return image
+        }
+        return cgImage
     }
 
     @objc private func cancel() {

@@ -10573,7 +10573,7 @@
 
     },
     "Exact Size" : {
-
+      "comment" : "精确尺寸"
     },
     "EXIF Metadata" : {
       "comment" : "EXIF元数据",
@@ -19606,6 +19606,9 @@
         }
       }
     },
+    "Location:" : {
+
+    },
     "Lock Mirror" : {
       "comment" : "锁定镜像",
       "localizations" : {
@@ -19927,6 +19930,9 @@
         }
       }
     },
+    "Longest Side" : {
+      "comment" : "最长边"
+    },
     "Loop music" : {
 
     },
@@ -20144,7 +20150,7 @@
         }
       }
     },
-    "Max Dimension" : {
+    "Max:" : {
 
     },
     "Maximize Window" : {
@@ -20468,6 +20474,9 @@
         }
       }
     },
+    "Min:" : {
+
+    },
     "Minimal Mode — Press Tab to Exit" : {
       "comment" : "简洁模式 — 按 Tab 退出"
     },
@@ -20577,6 +20586,9 @@
           }
         }
       }
+    },
+    "Mode:" : {
+
     },
     "Modification Date" : {
       "comment" : "修改日期",
@@ -25097,7 +25109,7 @@
         }
       }
     },
-    "Output:" : {
+    "Output" : {
 
     },
     "pan-zoom" : {
@@ -25746,7 +25758,7 @@
       }
     },
     "Percentage" : {
-
+      "comment" : "百分比"
     },
     "Pin Window" : {
       "comment" : "置顶",
@@ -30268,7 +30280,7 @@
     "Reset All to Defaults" : {
       "comment" : "全部重置为默认值"
     },
-    "Resize:" : {
+    "Resize" : {
 
     },
     "Reverse Filter" : {
@@ -32741,6 +32753,9 @@
           }
         }
       }
+    },
+    "Shortest Side" : {
+      "comment" : "最短边"
     },
     "Show All" : {
       "comment" : "显示全部",
