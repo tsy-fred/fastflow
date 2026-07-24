@@ -21116,6 +21116,9 @@
         }
       }
     },
+    "Move original to Trash after conversion" : {
+
+    },
     "Move to Folder…" : {
       "comment" : "移动到文件夹…"
     },
@@ -41123,6 +41126,9 @@
       }
     },
     "Transition:" : {
+
+    },
+    "trash originals" : {
 
     },
     "Undo" : {

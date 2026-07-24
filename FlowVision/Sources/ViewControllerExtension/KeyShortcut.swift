@@ -228,22 +228,15 @@ extension ViewController {
                 return nil
             }
             
-            // 检查按键是否是 "R" 键
-            // Check if key is "R"
+            // R — 聚焦到搜索框
+            // R — Focus search field
             if characters == "r" && noModifierKey {
-                // 如果焦点在OutlineView
-                // If focus is in OutlineView
-                if publicVar.isOutlineViewFirstResponder{
+                if publicVar.isOutlineViewFirstResponder {
                     outlineView.actRename(isByKeyboard: true)
                     return nil
                 }
-                
-                // 如果焦点在CollectionView
-                // If focus is in CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleRename(urls: publicVar.selectedUrls())
-                    return nil
-                }
+                // 不再使用旧的重命名
+                // Old rename removed; use B for batch rename
             }
             
             // 检查按键是否是 "," 键
@@ -504,21 +497,17 @@ extension ViewController {
                 return nil
             }
             
-            // 检查按键是否是 F2、回车、小键盘回车 键
-            // Check if key is F2, Enter, numpad Enter
+            // F2、回车、小键盘回车
+            // F2, Enter, numpad Enter
             if (specialKey == .f2 || specialKey == .carriageReturn || specialKey == .enter) && noModifierKey {
                 if specialKey == .f2 || !globalVar.isEnterKeyToOpen {
-                    // 如果焦点在OutlineView
-                    // If focus is in OutlineView
-                    if publicVar.isOutlineViewFirstResponder{
+                    if publicVar.isOutlineViewFirstResponder {
                         outlineView.actRename(isByKeyboard: true)
                         return nil
                     }
-                    
-                    // 如果焦点在CollectionView
-                    // If focus is in CollectionView
-                    if publicVar.isCollectionViewFirstResponder{
-                        handleRename(urls: publicVar.selectedUrls())
+                    if publicVar.isCollectionViewFirstResponder {
+                        // 已使用 B 键批量重命名，此处不再处理
+                        // Batch rename via B key; single rename removed
                         return nil
                     }
                 }else{
@@ -961,18 +950,6 @@ extension ViewController {
             // X — Delete
             if km.eventMatches(event, action: .delete) {
                 handleDelete()
-                return nil
-            }
-            
-            // N — 重命名
-            // N — Rename
-            if km.eventMatches(event, action: .rename) {
-                if publicVar.isCollectionViewFirstResponder {
-                    let urls = publicVar.selectedUrls()
-                    if !urls.isEmpty {
-                        handleRename(urls: urls)
-                    }
-                }
                 return nil
             }
             

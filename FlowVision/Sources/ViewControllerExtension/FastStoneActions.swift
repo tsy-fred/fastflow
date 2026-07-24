@@ -15,6 +15,7 @@ extension ViewController {
                     self?.publicVar.filesForLocateAfterChange = [first]
                     self?.publicVar.filesForLocateAfterChangeTime = .now()
                 }
+                self?.scheduledRefresh()
             }
         }
     }

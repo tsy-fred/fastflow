@@ -16,6 +16,7 @@ class BatchConvertPanel: NSWindowController {
     private var heightField: NSTextField!
     private var outputPopup: NSPopUpButton!
     private var subfolderField: NSTextField!
+    private var trashCheckbox: NSButton!
     private var infoLabel: NSTextField!
     private var completion: (() -> Void)?
 
@@ -23,6 +24,7 @@ class BatchConvertPanel: NSWindowController {
     private let qualityKey = "batchConvertQuality"
     private let resizeModeKey = "batchConvertResizeMode"
     private let subfolderKey = "batchConvertSubfolder"
+    private let trashSourceKey = "batchConvertTrashSource"
 
     private static var currentPanel: BatchConvertPanel?
 
@@ -277,7 +279,25 @@ class BatchConvertPanel: NSWindowController {
         stack.addArrangedSubview(fmtRow)
         stack.addArrangedSubview(resRow)
         stack.addArrangedSubview(outRow)
-        stack.setCustomSpacing(6, after: outRow)
+        stack.setCustomSpacing(4, after: outRow)
+
+        // Trash checkbox
+        let trashRow = NSView()
+        trashRow.translatesAutoresizingMaskIntoConstraints = false
+
+        trashCheckbox = NSButton(checkboxWithTitle: NSLocalizedString("Move original to Trash after conversion", comment: ""), target: self, action: #selector(trashToggled))
+        trashCheckbox.state = UserDefaults.standard.bool(forKey: trashSourceKey) ? .on : .off
+        trashCheckbox.translatesAutoresizingMaskIntoConstraints = false
+
+        trashRow.addSubview(trashCheckbox)
+        NSLayoutConstraint.activate([
+            trashRow.heightAnchor.constraint(equalToConstant: 24),
+            trashCheckbox.leadingAnchor.constraint(equalTo: trashRow.leadingAnchor, constant: 60),
+            trashCheckbox.centerYAnchor.constraint(equalTo: trashRow.centerYAnchor),
+        ])
+
+        stack.addArrangedSubview(trashRow)
+        stack.setCustomSpacing(6, after: trashRow)
         stack.addArrangedSubview(sep)
         stack.addArrangedSubview(infoLabel)
         stack.addArrangedSubview(btnRow)
@@ -286,6 +306,7 @@ class BatchConvertPanel: NSWindowController {
         fmtRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
         resRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
         outRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+        trashRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
         sep.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
         infoLabel.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
 
@@ -327,6 +348,10 @@ class BatchConvertPanel: NSWindowController {
         heightField.isHidden = !hasSizeFields
     }
 
+    @objc private func trashToggled() {
+        UserDefaults.standard.set(trashCheckbox.state == .on, forKey: trashSourceKey)
+    }
+
     @objc private func outputChanged() {
         if outputPopup.indexOfSelectedItem == 2 {
             let openPanel = NSOpenPanel()
@@ -346,7 +371,8 @@ class BatchConvertPanel: NSWindowController {
 
     private func updateInfo() {
         let fmt = ["JPEG", "PNG", "TIFF", "WebP"][formatPopup.indexOfSelectedItem]
-        infoLabel.stringValue = "\(urls.count) \(NSLocalizedString("files → ", comment: ""))\(fmt)"
+        let trash = trashCheckbox.state == .on ? " +\(NSLocalizedString("trash originals", comment: ""))" : ""
+        infoLabel.stringValue = "\(urls.count) \(NSLocalizedString("files → ", comment: ""))\(fmt)\(trash)"
     }
 
     @objc private func doConvert() {
@@ -443,6 +469,9 @@ class BatchConvertPanel: NSWindowController {
             CGImageDestinationAddImage(dest, finalImage, props as CFDictionary)
             if CGImageDestinationFinalize(dest) {
                 convertedCount += 1
+                if trashCheckbox.state == .on {
+                    try? fm.trashItem(at: url, resultingItemURL: nil)
+                }
             } else {
                 errors.append(url.lastPathComponent)
             }

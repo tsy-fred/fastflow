@@ -283,6 +283,9 @@ class BatchRenamePanel: NSWindowController {
         let effectivePad = max(pad, digitCount)
         let usePattern = pattern.isEmpty ? "file_%@" : pattern
 
+        let fm = FileManager.default
+        let sourcePaths = Set(urls.map { $0.path })
+        var seenNames = Set<String>()
         previewItems = urls.enumerated().map { (i, url) in
             let old = url.lastPathComponent
             let seq = String(format: "%0\(effectivePad)d", start + i)
@@ -291,6 +294,21 @@ class BatchRenamePanel: NSWindowController {
             if !newName.hasSuffix(".\(ext)") {
                 newName += ".\(ext)"
             }
+            let baseName = (newName as NSString).deletingPathExtension
+            var dedupCounter = 2
+            let dir = URL(fileURLWithPath: url.deletingLastPathComponent().path)
+            // 去重：batch 内同名 + 磁盘上已有同名
+            // Dedup against both batch and disk
+            while true {
+                let checkURL = dir.appendingPathComponent(newName)
+                let isSelf = url.path == checkURL.path
+                let existsInBatch = seenNames.contains(newName)
+                let existsOnDisk = !isSelf && fm.fileExists(atPath: checkURL.path) && !sourcePaths.contains(checkURL.path)
+                if !existsInBatch && !existsOnDisk { break }
+                newName = "\(baseName)_\(dedupCounter).\(ext)"
+                dedupCounter += 1
+            }
+            seenNames.insert(newName)
             return (old, newName)
         }
         tableView?.reloadData()
@@ -299,29 +317,76 @@ class BatchRenamePanel: NSWindowController {
     // MARK: - Actions
 
     @objc private func doRename() {
+        window?.makeFirstResponder(nil)
+        updatePreview()
         UserDefaults.standard.set(patternField.stringValue, forKey: patternKey)
         UserDefaults.standard.set(startField.integerValue, forKey: startKey)
         UserDefaults.standard.set(paddingField.integerValue, forKey: paddingKey)
 
         let fm = FileManager.default
         var renamed: [URL] = []
+        var errors: [String] = []
+
         for (i, url) in urls.enumerated() {
-            let newName = previewItems[i].new
-            let newURL = url.deletingLastPathComponent().appendingPathComponent(newName)
-            if url == newURL {
-                renamed.append(newURL)
+            guard i < previewItems.count else {
+                log("Batch rename: index \(i) out of range", level: .error)
+                errors.append(url.lastPathComponent)
                 continue
             }
-            if fm.fileExists(atPath: newURL.path) { continue }
+            let newName = previewItems[i].new
+            let dir = URL(fileURLWithPath: url.deletingLastPathComponent().path)
+            let newURLBase = dir.appendingPathComponent(newName)
+            log("Batch rename: \(url.lastPathComponent) → \(newName)", level: .debug)
+
+            guard fm.fileExists(atPath: url.path) else {
+                log("Batch rename: source not found: \(url.path)", level: .error)
+                errors.append(url.lastPathComponent)
+                continue
+            }
+
+            if url.path == newURLBase.path {
+                renamed.append(newURLBase)
+                continue
+            }
+
+            // 如果目标已存在，自动去重（追加 _2, _3 ...）
+            // If target exists, auto-dedup by appending _2, _3 ...
+            var finalURL = newURLBase
+            if fm.fileExists(atPath: finalURL.path) {
+                let ext = finalURL.pathExtension
+                let base = (finalURL.deletingPathExtension().path as NSString).lastPathComponent
+                var counter = 2
+                repeat {
+                    finalURL = dir.appendingPathComponent("\(base)_\(counter).\(ext)")
+                    counter += 1
+                } while fm.fileExists(atPath: finalURL.path)
+                log("Batch rename: \(newURLBase.lastPathComponent) exists, using \(finalURL.lastPathComponent)", level: .debug)
+            }
+
             do {
-                try fm.moveItem(at: url, to: newURL)
-                renamed.append(newURL)
+                try fm.moveItem(at: url, to: finalURL)
+                log("Batch rename: \(url.lastPathComponent) → \(finalURL.lastPathComponent) success", level: .debug)
+                renamed.append(finalURL)
             } catch {
-                log("Batch rename: \(url.lastPathComponent) → \(newName) failed: \(error)", level: .error)
+                log("Batch rename: \(url.lastPathComponent) → \(finalURL.lastPathComponent) failed: \(error)", level: .error)
+                errors.append(url.lastPathComponent)
             }
         }
+
         window?.close()
         Self.currentPanel = nil
+
+        if !errors.isEmpty {
+            let msg = "\(renamed.count)/\(urls.count) renamed, \(errors.count) errors"
+            log("Batch rename: \(msg)", level: .info)
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("Batch Rename", comment: "")
+            alert.informativeText = msg
+            alert.runModal()
+        } else {
+            log("Batch rename: \(renamed.count)/\(urls.count) done", level: .debug)
+        }
+
         completion?(renamed)
     }
 

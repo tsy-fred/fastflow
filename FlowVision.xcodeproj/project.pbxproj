@@ -15,8 +15,6 @@
 		F72B1E702F713AF60056B19F /* DemoSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B1E6F2F713AF60056B19F /* DemoSettingsViewController.swift */; };
 		F72B1E742F713D570056B19F /* TaggingSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F72B1E732F713D570056B19F /* TaggingSettingsViewController.xib */; };
 		F72B1E762F713DA80056B19F /* TaggingSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B1E752F713DA80056B19F /* TaggingSettingsViewController.swift */; };
-		F7D500012F80000000D5GN /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D500002F80000000D5GN /* DesignSystem.swift */; };
-		F7MINI0022F8000000MODE /* MinimalMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7MINI0012F8000000MODE /* MinimalMode.swift */; };
 		F73865D32C37B97500837FE4 /* CustomCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D22C37B97500837FE4 /* CustomCollectionView.swift */; };
 		F73865D52C37B9B800837FE4 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D42C37B9B800837FE4 /* Layout.swift */; };
 		F73865D72C37BB2900837FE4 /* CustomOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D62C37BB2900837FE4 /* CustomOutlineView.swift */; };
@@ -78,21 +76,22 @@
 		F7AC30052D37E26B00F48AEF /* CustomPathControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AC30042D37E25800F48AEF /* CustomPathControl.swift */; };
 		F7C2DEB82C4E6AE9003DF765 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = F7C2DEB72C4E6AE9003DF765 /* Settings */; };
 		F7C2DEBC2C4E6BEC003DF765 /* GeneralSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */; };
+		F7D500012F80000000D5GN /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D500002F80000000D5GN /* DesignSystem.swift */; };
 		F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */; };
 		F7E0B31C2DBF0F55007CBD17 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */; };
 		F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F600472E1E094A00ED8536 /* FinderTag.swift */; };
+		F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */; };
+		F7FAE1012F6BA00000FAE101 /* FileInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */; };
+		F7FED5F32F7D0B1100E35164 /* Tagging.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FED5F22F7D0B0E00E35164 /* Tagging.swift */; };
 		F7KB0012F8000000KBIND /* KeyBindingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00002F8000000KBIND /* KeyBindingManager.swift */; };
 		F7KB0014F8000000QUICK /* QuickFolderSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00022F8000000QUICK /* QuickFolderSelector.swift */; };
 		F7KB0015F8000000INFOM /* InfoOverlayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00032F8000000INFOM /* InfoOverlayManager.swift */; };
 		F7KB0016F8000000INFOV /* InfoOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00042F8000000INFOV /* InfoOverlayView.swift */; };
+		F7KB0017F8000000INFOS /* InfoOverlaySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00052F8000000INFOS /* InfoOverlaySettingsViewController.swift */; };
 		F7KB0018F8000000BREN /* BatchRenamePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00062F8000000BREN /* BatchRenamePanel.swift */; };
 		F7KB0019F8000000BCNV /* BatchConvertPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00072F8000000BCNV /* BatchConvertPanel.swift */; };
 		F7KB0020F8000000FACT /* FastStoneActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00082F8000000FACT /* FastStoneActions.swift */; };
-		F7KB0017F8000000INFOS /* InfoOverlaySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00052F8000000INFOS /* InfoOverlaySettingsViewController.swift */; };
-		F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */; };
-		F7KB0013F8000000KBSET /* KeyBindingSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7KB00012F8000000KBSET /* KeyBindingSettingsViewController.swift */; };
-		F7FAE1012F6BA00000FAE101 /* FileInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */; };
-		F7FED5F32F7D0B1100E35164 /* Tagging.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FED5F22F7D0B0E00E35164 /* Tagging.swift */; };
+		F7MINI0022F8000000MODE /* MinimalMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7MINI0012F8000000MODE /* MinimalMode.swift */; };
 		F7SL00012F8000000SLSH /* SlideshowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7SL00022F8000000SLSH /* SlideshowManager.swift */; };
 		F7SL00032F8000000SLSV /* SlideshowSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7SL00042F8000000SLSV /* SlideshowSettingsViewController.swift */; };
 		F7SL00052F8000000CMPR /* CompareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7SL00062F8000000CMPR /* CompareView.swift */; };
@@ -140,8 +139,6 @@
 		F72B1E712F713D570056B19F /* TaggingSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TaggingSettingsViewController.xib; path = Base.lproj/TaggingSettingsViewController.xib; sourceTree = "<group>"; };
 		F72B1E722F713D570056B19F /* TaggingSettingsViewController.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = TaggingSettingsViewController.xcstrings; path = mul.lproj/TaggingSettingsViewController.xcstrings; sourceTree = "<group>"; };
 		F72B1E752F713DA80056B19F /* TaggingSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingSettingsViewController.swift; sourceTree = "<group>"; };
-		F7D500002F80000000D5GN /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
-		F7MINI0012F8000000MODE /* MinimalMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalMode.swift; sourceTree = "<group>"; };
 		F73865D22C37B97500837FE4 /* CustomCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionView.swift; sourceTree = "<group>"; };
 		F73865D42C37B9B800837FE4 /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		F73865D62C37BB2900837FE4 /* CustomOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomOutlineView.swift; sourceTree = "<group>"; };
@@ -209,23 +206,25 @@
 		F7AAA8BC2D9BD1ED007CE330 /* VideoProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcess.swift; sourceTree = "<group>"; };
 		F7AC30042D37E25800F48AEF /* CustomPathControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPathControl.swift; sourceTree = "<group>"; };
 		F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsViewController.swift; sourceTree = "<group>"; };
+		F7D500002F80000000D5GN /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		F7F600472E1E094A00ED8536 /* FinderTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderTag.swift; sourceTree = "<group>"; };
+		F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPopoverViewController.swift; sourceTree = "<group>"; };
+		F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoWindow.swift; sourceTree = "<group>"; };
+		F7FED5F22F7D0B0E00E35164 /* Tagging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagging.swift; sourceTree = "<group>"; };
 		F7KB00002F8000000KBIND /* KeyBindingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyBindingManager.swift; sourceTree = "<group>"; };
 		F7KB00022F8000000QUICK /* QuickFolderSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickFolderSelector.swift; sourceTree = "<group>"; };
 		F7KB00032F8000000INFOM /* InfoOverlayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoOverlayManager.swift; sourceTree = "<group>"; };
 		F7KB00042F8000000INFOV /* InfoOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoOverlayView.swift; sourceTree = "<group>"; };
+		F7KB00052F8000000INFOS /* InfoOverlaySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoOverlaySettingsViewController.swift; sourceTree = "<group>"; };
 		F7KB00062F8000000BREN /* BatchRenamePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchRenamePanel.swift; sourceTree = "<group>"; };
 		F7KB00072F8000000BCNV /* BatchConvertPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchConvertPanel.swift; sourceTree = "<group>"; };
 		F7KB00082F8000000FACT /* FastStoneActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastStoneActions.swift; sourceTree = "<group>"; };
+		F7MINI0012F8000000MODE /* MinimalMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalMode.swift; sourceTree = "<group>"; };
 		F7SL00022F8000000SLSH /* SlideshowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideshowManager.swift; sourceTree = "<group>"; };
 		F7SL00042F8000000SLSV /* SlideshowSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideshowSettingsViewController.swift; sourceTree = "<group>"; };
 		F7SL00062F8000000CMPR /* CompareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompareView.swift; sourceTree = "<group>"; };
-		F7KB00052F8000000INFOS /* InfoOverlaySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoOverlaySettingsViewController.swift; sourceTree = "<group>"; };
-		F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPopoverViewController.swift; sourceTree = "<group>"; };
-		F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoWindow.swift; sourceTree = "<group>"; };
-		F7FED5F22F7D0B0E00E35164 /* Tagging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagging.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -854,7 +853,7 @@
 				F7A0755E2BA1D717009C47A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		F7A0755F2BA1D717009C47A6 /* Build configuration list for PBXNativeTarget "FlowVision" */ = {
 			isa = XCConfigurationList;
@@ -863,7 +862,7 @@
 				F7A075612BA1D717009C47A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 
